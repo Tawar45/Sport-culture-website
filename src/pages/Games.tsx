@@ -37,12 +37,6 @@ const Games = () => {
   
   return (
     <div className={styles.pageContainer}>
-      {/* <header className={styles.header}>
-        <h1 className={styles.title}>Games</h1>
-        <p className={styles.subtitle}>
-          Explore our collection of sports and games—each with its own magic, just like a Ghibli adventure.
-        </p>
-      </header> */}
       <div className={styles.gamesGrid}>
         {games.map((game) => (
           <div
