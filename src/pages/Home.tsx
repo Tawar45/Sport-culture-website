@@ -2,19 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './Home.module.css';
 import { Tabs, Tab, Box } from '@mui/material';
-import {
-  Card,
-  CardMedia,
-  // CardContent,
-  // Typography,
-  // Rating,
-  // Chip,
-} from '@mui/material';
+import {Card,CardMedia} from '@mui/material';
 import pickleballIcon from '../assets/Pickleball.png';
 import tennisIcon from '../assets/Tennis.png';
 import tableTennisIcon from '../assets/Table Tennis.png';
-// import basketballIcon from '../assets/Basketball.png';
-// import volleyballIcon from '../assets/Volleyball.png';
 import badmintonIcon from '../assets/Badminton.png';
 import heroBackground from '../assets/hero-section-back-img.png';
 import FilterSection from '../components/FilterSection';
@@ -27,9 +18,28 @@ import subsendimg from '../assets/sub-send-img.png';
 // import eyeicon from '../assets/eye-icon.svg';
 import LogoSlider from '../components/LogoSlider';
 import { motion } from 'framer-motion';
+
+const API_URL = import.meta.env.VITE_API_URL; // For Vite
+
 // import sectionbackimage from '../assets/easy_section_back.png';
 // import listimage from '../assets/Become-Partner-img.png';
 // import { turfApi } from '../services/api';
+export const fetchGames = async () => {
+  const response = await fetch(`${API_URL}/api/games/list`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  return response.json();
+};
+
+type Game = {
+  name: string;
+  imageUrl: string;
+  description: string;
+  // add other properties if needed
+};
+
 
 interface Venue {
   id: number;
@@ -51,213 +61,32 @@ const Home = () => {
   const [venues, setVenues] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const categories = [
-    {
-      name: 'Tennis',
-      icon: tennisIcon
-    },
-    {
-      name: 'Badminton',
-      icon: badmintonIcon
-    },
-    {
-      name: 'Table Tennis',
-      icon: tableTennisIcon
-    },
-    {
-      name: 'Pickleball',
-      icon: pickleballIcon
-    },
-   
-   
-    // {
-    //   name: 'Basketball',
-    //   icon: basketballIcon
-    // },
-    // {
-    //   name: 'Volleyball',
-    //   icon: volleyballIcon
-    // },
-   
-  ];
-
-  // Add typewriter effect for hero heading
   const fullHeading = '“Need of the hour” I “Join the revolution”';
-  const [typedIndex, setTypedIndex] = useState(0);
-
+  const  [typedIndex , setTypedIndex] =useState();
+  const [categories, setCategories] = useState<Game[]>([]);
+  
   useEffect(() => {
-    setTypedIndex(0);
-    const interval = setInterval(() => {
-      setTypedIndex(prev => {
-        if (prev < fullHeading.length) {
-          return prev + 1;
-        } else {
-          clearInterval(interval);
-          return prev;
-        }
-      });
-    }, 40);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    const fetchInitialVenues = async () => {
+    const getGames = async () => {
       try {
-        setLoading(true);
-        setError(null);
-
-        const response = await fetch(`http://localhost:3000/api/turfs/search?sport=pickleball`, {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log('Initial data:', data); // Debug log
-
-        if (!Array.isArray(data)) {
-          throw new Error('Invalid data format received from server');
-        }
-
-        setVenues(data);
-      } catch (err: any) {
-        console.error('Error fetching initial venues:', err);
-        setError('Failed to fetch venues. Please try again later.');
-      } finally {
-        setLoading(false);
+        console.log("API_URL:", API_URL); // Debug
+        const data = await fetchGames();
+        console.log("Profile data:", data); // Debug
+        setCategories(data.games);
+      } catch (error) {
+        console.error('Failed to fetch profile:', error);
       }
-    };
+      };
+      getGames();
+ }, []);
+  const handleChange = () => {
+   
+  }
+  const handleSearch = () => {
+   
+  }
+   
 
-    fetchInitialVenues();
-  }, []);
 
-  const handleChange = (_: React.SyntheticEvent, newValue: number) => {
-    setActiveCategory(newValue);
-    const sportName = categories[newValue].name.toLowerCase();
-    // Convert space to hyphen for table tennis
-    const selectedSport = sportName === 'table tennis' ? 'table-tennis' : sportName;
-
-    // Immediately fetch venues with the new sport filter
-    const fetchVenues = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const response = await fetch(`http://localhost:3000/api/turfs/search?sport=${selectedSport}`, {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log('Received data:', data); // Debug log
-
-        if (!Array.isArray(data)) {
-          throw new Error('Invalid data format received from server');
-        }
-
-        setVenues(data);
-      } catch (err: any) {
-        console.error('Error fetching venues:', err);
-        setError('Failed to fetch venues. Please try again later.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchVenues();
-  };
-
-  const handleSearch = async (filters: {
-    city: string;
-    sport: string;
-    date: string;
-    time: string;
-  }) => {
-    try {
-      const params = new URLSearchParams();
-      if (filters.sport !== 'all') params.append('sport', filters.sport);
-      if (filters.city !== 'all') params.append('city', filters.city);
-      if (filters.date) params.append('date', filters.date);
-      if (filters.time) params.append('time', filters.time);
-
-      navigate(`/venues?${params.toString()}`);
-    } catch (err) {
-      console.error('Search error:', err);
-    }
-  };
-
-  const VenueCard = ({ venue }: { venue: Venue }) => {
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    const [imageError, setImageError] = useState(false);
-    const navigate = useNavigate();
-
-    const handleImageError = () => {
-      setImageError(true);
-    };
-
-    const handleViewDetails = () => {
-      navigate(`/venues/${venue.id}`);
-    };
-
-    const fallbackImage = "https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?w=800&auto=format&fit=crop&q=60";
-
-    return (
-      <Card
-        sx={{
-          maxWidth: 345,
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          transition: 'transform 0.2s',
-          '&:hover': {
-            transform: 'scale(1.02)',
-            boxShadow: 3
-          }
-        }}
-      >
-        <CardMedia
-          component="img"
-          height="200"
-          image={imageError ? fallbackImage : venue.images[currentImageIndex]}
-          alt={venue.name}
-          onError={handleImageError}
-          sx={{
-            objectFit: 'cover',
-            cursor: 'pointer'
-          }}
-          onClick={() => setCurrentImageIndex((prev) => (prev + 1) % venue.images.length)}
-        />
-        <div className={styles.venue_content}>
-          <p className={styles.venue_type}>{venue.sport}</p>
-          <h3 className={styles.venue_name}>{venue.name}</h3>
-          <p className={styles.venue_location}>{venue.city}</p>
-          <div className={styles.venue_actions}>
-            <button className={styles.view_details_btn} onClick={handleViewDetails}>
-            <i className='fa-solid fa-eye'></i> View Details
-            
-            </button>
-            <button className={styles.book_now_btn}>
-              Book Now
-            </button>
-          </div>
-        </div>
-      </Card>
-    );
-  };
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
@@ -361,7 +190,7 @@ const Home = () => {
                   key={category.name}
                   icon={
                     <div className={styles.tab_img_box}>
-                      <img src={category.icon} alt={category.name} />
+                      <img src={category.imageUrl} alt={category.name} />
                     </div>
                   }
                   label={category.name}
@@ -375,9 +204,28 @@ const Home = () => {
       </section>
 
       {/* Featured Venues/Courts Section */}
-      <section className={`py-8 sm:py-12 px-4 ${styles.featured_venues}`}>
+      <section className={`py-8 sm:py-12 px-4 ${styles}`}>
+          <div className ="venue-card">
+          <img
+          id="venue-image"
+          src="https://example.com/image1.jpg"
+          alt="Venue Name"
+          />
+          <div className="venue_content">
+          <p className="venue_type">Football</p>
+          <h3 className="venue_name">Greenfield Stadium</h3>
+          <p className="venue_location">New York City</p>
+          <div className="venue_actions">
+          <button className="view_details_btn">
+          <i className="fa-solid fa-eye"></i> View Details
+          </button>
+          <button className="book_now_btn">Book Now</button>
+          </div>
+          </div>
+          </div>
+        
         {/* <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 text-center mb-8 sm:mb-12">Featured Venues</h2> */}
-        {loading ? (
+        {/* {loading ? (
           <div className="flex justify-center items-center py-8">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
           </div>
@@ -401,7 +249,7 @@ const Home = () => {
               <VenueCard key={venue.id} venue={venue} />
             ))}
           </div>
-        )}
+        )} */}
       </section>
       <section className={styles.easy_section} >
         <div className='container'>

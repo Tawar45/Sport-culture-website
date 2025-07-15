@@ -10,7 +10,8 @@ import {
   Alert,
   Link,
 } from '@mui/material';
-// import { useAuth } from '../context/AuthContext';
+ import { useAuth } from '../context/AuthContext';
+ const API_URL = import.meta.env.VITE_API_URL; // For Vite
 
 const CustomerLogin = () => {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const CustomerLogin = () => {
     password: '',
   });
   const [error, setError] = useState('');
-  // const { user, setUser } = useAuth();
+  const { login } = useAuth();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -33,7 +34,7 @@ const CustomerLogin = () => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
+      const response = await fetch(`${API_URL}/api/auth/user-login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -46,16 +47,8 @@ const CustomerLogin = () => {
       if (!response.ok) {
         throw new Error(data.message || 'Failed to login');
       }
-
-      // Store token and user data
-      localStorage.setItem('customerToken', data.token);
-      localStorage.setItem('customerData', JSON.stringify(data.user));
-
-      // Fire custom event so Header updates immediately
-      // setUser(data.user); // context ka setUser
-      window.dispatchEvent(new Event('userLogin'));
-
-      // Redirect to home page
+      // Use context to store user and token
+      login(data.user, data.token); // <--- Type-safe!
       navigate('/');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to login');

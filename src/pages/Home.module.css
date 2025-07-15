@@ -447,3 +447,68 @@
     scrollbar-width: none;
   }
 }
+
+  .venue-card {
+    max-width: 345px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .venue-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+
+  .venue-card img {
+    height: 200px;
+    object-fit: cover;
+    width: 100%;
+    cursor: pointer;
+  }
+
+  .venue_content {
+    padding: 16px;
+  }
+
+  .venue_type {
+    font-size: 14px;
+    color: gray;
+  }
+
+  .venue_name {
+    font-size: 20px;
+    margin: 8px 0;
+  }
+
+  .venue_location {
+    font-size: 16px;
+    color: #666;
+  }
+
+  .venue_actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 12px;
+  }
+
+  .view_details_btn, .book_now_btn {
+    padding: 8px 12px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+
+  .view_details_btn {
+    background-color: #007bff;
+    color: white;
+  }
+
+  .book_now_btn {
+    background-color: #28a745;
+    color: white;
+  }

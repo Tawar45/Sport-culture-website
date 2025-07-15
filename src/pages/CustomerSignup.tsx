@@ -10,6 +10,7 @@ import {
   Alert,
   Link,
 } from '@mui/material';
+const API_URL = import.meta.env.VITE_API_URL; // For Vite
 
 const CustomerSignup = () => {
   const navigate = useNavigate();
@@ -29,6 +30,9 @@ const CustomerSignup = () => {
     });
   };
 
+
+  // const API_URL = process.env.REACT_APP_API_URL; // For CRA
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -39,17 +43,17 @@ const CustomerSignup = () => {
     }
 
     try {
-      const response = await fetch('/api/users/signup', {
+      const response = await fetch(`${API_URL}/api/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name: formData.name,
+          username: formData.name,
           email: formData.email,
           password: formData.password,
-          phone: formData.phone,
-          role: 'customer',
+          phone_number: formData.phone,
+          usertype: 'user',
         }),
       });
 

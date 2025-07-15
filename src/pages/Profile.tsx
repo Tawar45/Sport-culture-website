@@ -1,34 +1,51 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect } from "react";
 
-const getAvatarUrl = (name: string) =>
-  `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=f1a501&color=fff`;
+// const getAvatarUrl = (name: string) =>
+//   `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=f1a501&color=fff`;
 
-const initialUser = {
-  name: "Rahul Sharma",
-  email: "rahul.sharma@email.com",
-  phone: "+91 9876543210",
-  city: "Ahmedabad",
-  joined: "Jan 2023",
+// const initialUser = {
+//   name: "Rahul Sharma",
+//   email: "rahul.sharma@email.com",
+//   phone: "+91 9876543210",
+//   city: "Ahmedabad",
+//   joined: "Jan 2023",
+// };
+const API_URL = import.meta.env.VITE_API_URL; // For Vite
+
+export const fetchProfile = async () => {
+  const token = localStorage.getItem('customerToken'); // Or get from context
+  const response = await fetch(`${API_URL}/api/auth/profile`, {
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token && { Authorization: `Bearer ${token}` }),
+    },
+  });
+  return response.json();
 };
 
 const Profile = () => {
-  const [user, setUser] = useState(initialUser);
+  // const [user, setUser] = useState(initialUser);
   const [editMode, setEditMode] = useState(false);
-  const [form, setForm] = useState(user);
+  const [form, setForm] = useState([]);
+  const [profile, setProfile] = useState<any>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setForm({ ...form, [e.target.name]: e.target.value });
+  // };
+  useEffect(() => {
+    const getProfile = async () => {
+      try {
+        console.log("API_URL:", API_URL); // Debug
+        const data = await fetchProfile();
+        console.log("Profile data:", data); // Debug
+        setProfile(data.user);
+      } catch (error) {
+        console.error('Failed to fetch profile:', error);
+      }
+    };
+    getProfile();
+  }, []);
 
-  const handleEdit = () => setEditMode(true);
-  const handleCancel = () => {
-    setForm(user);
-    setEditMode(false);
-  };
-  const handleSave = () => {
-    setUser(form);
-    setEditMode(false);
-  };
 
   return (
     <div
@@ -74,7 +91,7 @@ const Profile = () => {
           }}
         >
           <img
-            src={getAvatarUrl(user.name)}
+            src={profile?.image}
             alt="User Avatar"
             style={{
               width: 140,
@@ -87,11 +104,11 @@ const Profile = () => {
             }}
           />
           <h2 style={{ margin: 0, fontSize: 32, fontWeight: 700, letterSpacing: 1, color: "#fff" }}>
-            {user.name}
+            {profile?.username}
           </h2>
-          <p style={{ margin: "8px 0 0 0", fontSize: 18, opacity: 0.85, color: "#fff" }}>{user.email}</p>
+          <p style={{ margin: "8px 0 0 0", fontSize: 18, opacity: 0.85, color: "#fff" }}>{profile?.email}</p>
           <div style={{ marginTop: 32, fontSize: 16, opacity: 0.9, color: "#fff" }}>
-            <span style={{ fontWeight: 500 }}>Member Since:</span> {user.joined}
+            <span style={{ fontWeight: 500 }}>Member Since:</span> {profile?.createdAt ? new Date(profile.createdAt).toISOString().slice(0, 10) : ''}
           </div>
         </div>
 
@@ -114,147 +131,26 @@ const Profile = () => {
             {/* Name */}
             <div>
               <label style={{ fontWeight: 600, color: "#f1a501", fontSize: 16 }}>Full Name</label>
-              {editMode ? (
-                <input
-                  type="text"
-                  name="name"
-                  value={form.name}
-                  onChange={handleChange}
-                  style={{
-                    width: "100%",
-                    padding: "12px 16px",
-                    fontSize: 18,
-                    borderRadius: 8,
-                    border: "1.5px solid #f1a501",
-                    marginTop: 6,
-                  }}
-                />
-              ) : (
-                <div style={{ fontSize: 20, marginTop: 6 }}>{user.name}</div>
-              )}
+                <div style={{ fontSize: 20, marginTop: 6 }}>{profile?.username}</div>
             </div>
             {/* Email */}
             <div>
               <label style={{ fontWeight: 600, color: "#f1a501", fontSize: 16 }}>Email</label>
-              {editMode ? (
-                <input
-                  type="email"
-                  name="email"
-                  value={form.email}
-                  onChange={handleChange}
-                  style={{
-                    width: "100%",
-                    padding: "12px 16px",
-                    fontSize: 18,
-                    borderRadius: 8,
-                    border: "1.5px solid #f1a501",
-                    marginTop: 6,
-                  }}
-                />
-              ) : (
-                <div style={{ fontSize: 20, marginTop: 6 }}>{user.email}</div>
-              )}
+                <div style={{ fontSize: 20, marginTop: 6 }}>{profile?.email}</div>
             </div>
             {/* Phone */}
             <div>
               <label style={{ fontWeight: 600, color: "#f1a501", fontSize: 16 }}>Phone</label>
-              {editMode ? (
-                <input
-                  type="text"
-                  name="phone"
-                  value={form.phone}
-                  onChange={handleChange}
-                  style={{
-                    width: "100%",
-                    padding: "12px 16px",
-                    fontSize: 18,
-                    borderRadius: 8,
-                    border: "1.5px solid #f1a501",
-                    marginTop: 6,
-                  }}
-                />
-              ) : (
-                <div style={{ fontSize: 20, marginTop: 6 }}>{user.phone}</div>
-              )}
+
+                <div style={{ fontSize: 20, marginTop: 6 }}>{profile?.phone_number}</div>
             </div>
             {/* City */}
             <div>
               <label style={{ fontWeight: 600, color: "#f1a501", fontSize: 16 }}>City</label>
-              {editMode ? (
-                <input
-                  type="text"
-                  name="city"
-                  value={form.city}
-                  onChange={handleChange}
-                  style={{
-                    width: "100%",
-                    padding: "12px 16px",
-                    fontSize: 18,
-                    borderRadius: 8,
-                    border: "1.5px solid #f1a501",
-                    marginTop: 6,
-                  }}
-                />
-              ) : (
-                <div style={{ fontSize: 20, marginTop: 6 }}>{user.city}</div>
-              )}
+                <div style={{ fontSize: 20, marginTop: 6 }}>{profile?.city}</div>
             </div>
           </div>
-          {/* Buttons */}
-          <div style={{ marginTop: 40, display: "flex", gap: 18 }}>
-            {editMode ? (
-              <>
-                <button
-                  onClick={handleSave}
-                  style={{
-                    padding: "12px 36px",
-                    background: "linear-gradient(90deg, #f1a501 0%, #f7c873 100%)",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: 10,
-                    fontWeight: 700,
-                    fontSize: 18,
-                    cursor: "pointer",
-                    boxShadow: "0 2px 8px #f1a50133",
-                  }}
-                >
-                  Save
-                </button>
-                <button
-                  onClick={handleCancel}
-                  style={{
-                    padding: "12px 36px",
-                    background: "#fff7e0",
-                    color: "#f1a501",
-                    border: "1.5px solid #f1a501",
-                    borderRadius: 10,
-                    fontWeight: 700,
-                    fontSize: 18,
-                    cursor: "pointer",
-                  }}
-                >
-                  Cancel
-                </button>
-              </>
-            ) : (
-              <button
-                onClick={handleEdit}
-                style={{
-                  padding: "12px 36px",
-                  background: "linear-gradient(90deg, #f1a501 0%, #f7c873 100%)",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: 10,
-                  fontWeight: 700,
-                  fontSize: 18,
-                  cursor: "pointer",
-                  boxShadow: "0 2px 8px #f1a50133",
-                }}
-              >
-                Edit Profile
-              </button>
-            )}
-          </div>
+      
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   IconButton,
@@ -8,14 +8,38 @@ import {
 import { AccountCircle } from '@mui/icons-material';
 import styles from './Header.module.css';
 import cultureLogo from '../assets/culture-logo.png';
+import { useAuth } from '../context/AuthContext';
+// import axios from 'axios';
+// import { fetchCities } from '../services/api';
+const API_URL = import.meta.env.VITE_API_URL; // For Vite
+
+export const fetchCities = async () => {
+    const response = await fetch(`${API_URL}/api/city/list`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.json();
+};
 
 const Header = () => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    return localStorage.getItem('customerToken') !== null || localStorage.getItem('adminToken') !== null;
-  });
+  const { user, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [cities, setCities] = useState<{ name: string }[]>([]);
+
+  useEffect(() => {
+    const getCities = async () => {
+      try {
+        const data = await fetchCities();
+        setCities(data.cities); // Adjust if your API returns { cities: [...] }
+      } catch (error) {
+        console.error('Failed to fetch cities:', error);
+      }
+    };
+    getCities();
+  }, []);
 
   const handleMobileMenuToggle = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -30,21 +54,14 @@ const Header = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('customerToken');
-    localStorage.removeItem('customerData');
-    localStorage.removeItem('adminToken');
-    setIsLoggedIn(false);
+    logout();
     handleClose();
     navigate('/');
   };
 
   const handleProfile = () => {
     handleClose();
-    if (localStorage.getItem('adminToken')) {
-      navigate('/admin/dashboard');
-    } else {
-      navigate('/profile');
-    }
+    navigate('/profile');
   };
 
   return (
@@ -52,9 +69,7 @@ const Header = () => {
       {/* Top Banner */}
       <div className={styles.top_banner}>
         <div className='text-center w-100'>
-          {/* <span className="flex-shrink-0">Book your slot at nearest location - 30% OFF using SAVE30</span> */}
           <span className="flex-shrink-0">Book 1st Slot and Get Coupon for 2nd Slot</span>
-          {/* <span className="flex-shrink-0">Book your slot at nearest location - 30% OFF using SAVE30</span> */}
         </div>
       </div>
 
@@ -76,21 +91,19 @@ const Header = () => {
             <Link to="/volunteer" className="hover:text-[#6a1b9a]">Join Us</Link>
             <Link to="/blogs" className="hover:text-[#6a1b9a]">Blogs</Link>
             <Link to="/contact" className="hover:text-[#6a1b9a]">Contact</Link>
-            <Link to="/login" className="hover:text-[#6a1b9a]"> Login </Link>
-
+            {!user && (
+              <Link to="/login" className="hover:text-[#6a1b9a]"> Login </Link>
+            )}
           </div>
 
           {/* Desktop Right Section: Location and Login */}
           <div className="d-flex align-items-center gap-3">
             <select className="bg-gray-100 p-2 rounded-md border-0 text-gray-700 text-sm">
-              <option>AHMEDABAD</option>
-              <option>INDORE</option>
-              <option>VADODARA</option>
-              <option>SURAT</option>
-              {/* Add more locations as needed */}
+              {cities?.map((city) => (
+                <option key={city.name}>{city?.name}</option>
+              ))}
             </select>
-            
-            {isLoggedIn ? (
+            {user ? (
               <>
                 <IconButton
                   size="large"
@@ -126,21 +139,11 @@ const Header = () => {
               </>
             ) : (
               <div className="flex items-center space-x-2">
-                {/* <Link to="/login" className="bg-[#fff] border-[#F1A501] border-1 text-[#000] px-5 py-2 rounded-[40px] font-semibold text-base">
-                  Login
-                </Link> */}
                 <Link to="/list-your-ground" className="bg-[#fff] border-[#F1A501] border-1 text-[#000] px-5 py-2 rounded-[40px] font-semibold text-base no-underline">
-                JOIN AS VENUE
+                  JOIN AS VENUE
                 </Link>
               </div>
             )}
-
-            {/* Mobile Menu Toggle Button */}
-            {/* <button className="md:hidden text-gray-700 focus:outline-none" onClick={handleMobileMenuToggle}>
-              <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
-              </svg>
-            </button> */}
           </div>
         </nav>
 
@@ -164,11 +167,9 @@ const Header = () => {
               {/* Location Selector */}
               <div className="mb-6">
                 <select className="w-full bg-gray-100 p-3 rounded-lg border-0 text-gray-700 text-sm">
-                  <option>AHMEDABAD</option>
-                  <option>INDORE</option>
-                  <option>VADODARA</option>
-                  <option>SURAT</option>
-                  {/* Add more locations as needed */}
+                  {cities.map((city) => (
+                    <option key={city.name}>{city.name}</option>
+                  ))}
                 </select>
               </div>
 
@@ -186,7 +187,7 @@ const Header = () => {
 
               {/* Mobile Login/Admin Section */}
               <div className="mt-6 pt-6 border-t border-gray-200">
-                {!isLoggedIn ? (
+                {!user ? (
                   <>
                     <Link to="/login" className="block w-full bg-[#fff] border-[#F1A501] border-2 text-[#000] px-5 py-3 rounded-[40px] font-semibold text-base text-center" onClick={handleMobileMenuToggle}>
                       Login
