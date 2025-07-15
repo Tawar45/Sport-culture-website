@@ -1,0 +1,218 @@
+.container {
+  max-width: 1300px;
+  margin: auto;
+  padding: 32px 16px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+  margin-bottom: 4px;
+}
+
+.address {
+  font-size: 1rem;
+  color: #555;
+  margin: 0;
+  margin-bottom: 24px;
+}
+
+.layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+}
+
+.mainContent {
+  flex: 9;
+  min-width: 300px;
+}
+
+.sidebar {
+  flex: 4;
+  min-width: 300px;
+}
+
+.mainImage {
+  width: 100%;
+  height: 350px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.thumbnailContainer {
+  display: flex;
+  gap: 8px;
+}
+
+.thumbnail {
+  width: 80px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.thumbnailActive {
+  border: 2px solid #9333ea;
+}
+
+.section {
+  margin-bottom: 24px;
+}
+
+.bookButton {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  background-color: #f59e0b;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 16px;
+}
+
+/* Booking form styles */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.formLabel {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.formInput {
+  padding: 12px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.inputWithIcon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputWithIcon .formInput {
+  width: 100%;
+  padding-right: 40px; /* space for icon */
+}
+
+.inputIcon {
+  position: absolute;
+  right: 12px;
+  color: #555;
+}
+
+.durationControl {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.durationButton {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.durationDisplay {
+  font-weight: 600;
+}
+
+/* Booking confirmation popup styles */
+.popupOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.popup {
+  background: #fff;
+  padding: 24px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+.popupHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.popupTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.popupCloseButton {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.popupBookingDetails {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.popupBookingText {
+  font-size: 0.9rem;
+  margin: 4px 0;
+}
+
+.popupPaymentInfo {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.popupPaymentLabel {
+  color: #555;
+  font-size: 0.8rem;
+  margin-bottom: 4px;
+}
+
+.popupPrice {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0;
+} 

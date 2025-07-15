@@ -1,0 +1,141 @@
+.pageContainer {
+  /* max-width: 1200px; */
+  margin: auto;
+  padding: 64px 24px;
+  font-family: 'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  min-height: 100vh;
+  position: relative;
+  background: linear-gradient(120deg, #fffbe9 0%, #fdf6e3 50%, #f1a50177 100%);
+  overflow: hidden;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 48px;
+  position: relative;
+  z-index: 1;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #f1a501;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.subtitle {
+  font-size: 1.3rem;
+  color: #5a5a5a;
+  margin-bottom: 0;
+}
+
+.gamesGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 48px;
+  margin-top: 40px;
+  position: relative;
+  z-index: 1;
+}
+
+.gameCard {
+  background: transparent; /* Fully transparent, only blur */
+  border-radius: 32px;
+  box-shadow: 0 8px 32px rgba(106,27,154,0.10), 0 1.5px 6px rgba(0,0,0,0.04);
+  padding: 32px 24px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.18s, box-shadow 0.18s, background 0.18s;
+  cursor: pointer;
+  border: 1.5px solid rgba(241, 165, 1, 0.18); /* Soft yellow border */
+  backdrop-filter: blur(12px) saturate(160%);
+  min-height: 420px;
+  position: relative;
+  overflow: hidden;
+}
+
+.gameCard:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 16px 48px rgba(106,27,154,0.18), 0 2px 8px rgba(0,0,0,0.09);
+  /* No border color change */
+}
+
+.gameCard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 32px;
+  background: linear-gradient(120deg, rgba(241,165,1,0.08) 0%, rgba(106,27,154,0.06) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.gameCard > * {
+  position: relative;
+  z-index: 1;
+}
+
+.gameName {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1d1d1f;
+  margin-bottom: 10px;
+  text-align: center;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.gameDesc {
+  font-size: 1.08rem;
+  color: #5a5a5a;
+  text-align: center;
+  margin-bottom: 18px;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.gameFrame {
+  width: 100%;
+  height: 180px;
+  border: none;
+  border-radius: 18px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.09);
+  background: #f5f5f7;
+  margin-bottom: 18px;
+}
+
+.teamSection {
+  text-align: center;
+  margin: 64px 0;
+}
+.teamGrid {
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+  margin-top: 32px;
+}
+.memberCard {
+  background: rgba(255,255,255,0.6);
+  border-radius: 24px;
+  padding: 24px 16px;
+  box-shadow: 0 4px 24px #0001;
+  backdrop-filter: blur(8px);
+  min-width: 180px;
+}
+.avatar {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  margin-bottom: 12px;
+  object-fit: cover;
+  background: #fff;
+}
+.name {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+.role {
+  color: #6a1b9a;
+  font-size: 0.98rem;
+} 

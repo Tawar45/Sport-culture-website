@@ -1,0 +1,43 @@
+.ctaMailForm {
+  margin-top: 16px;
+  display: flex;
+  position: relative;
+}
+
+.ctaInput {
+  border-radius: 20px;
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  width: 83%;
+  font-size: 1rem;
+  outline: none;
+  transition: box-shadow 0.2s;
+}
+
+.ctaInput:focus {
+  box-shadow: 0 6px 24px #6a1b9a33;
+  border-color: #F1A501;
+}
+
+.ctaSendBtn {
+  background: #F1A501;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: background 0.2s;
+}
+
+.ctaSendBtn:hover {
+  background: #4a148c;
+} 

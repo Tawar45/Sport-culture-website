@@ -1,0 +1,185 @@
+.listGroundBg {
+  min-height: 100vh;
+  /* background: #f1a501; */
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 60px 0 0 60px;
+}
+
+.formContainer {
+  background: #fff;
+  /* box-shadow: 0 4px 24px 0 rgba(31, 38, 135, 0.08); */
+  border-radius: 12px;
+  padding: 32px 32px 32px 32px;
+  max-width: 770px;
+  width: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 8px;
+  letter-spacing: 0.2px;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: #444;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.inputGroup label {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #222;
+}
+
+.inputGroup input {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  background: #fafbfc;
+  font-size: 1rem;
+  transition: border 0.2s;
+}
+
+.inputGroup input:focus {
+  /* border: 1.5px solid #f1a501; */
+  outline: none;
+}
+
+.gamesRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 4px;
+  background: transparent;
+}
+
+.customCheckbox {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkboxLabel {
+  position: relative;
+  padding-left: 28px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 1rem;
+  color: #333;
+  font-weight: 400;
+  background: transparent;
+}
+
+.checkmark {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 18px;
+  width: 18px;
+  /* background-color: #f1a501; */
+  border-radius: 4px;
+  border: 1.5px solid #e0e0e0;
+  transition: background 0.2s, border 0.2s;
+}
+
+.checkboxLabel input:checked ~ .checkmark {
+  background-color: #f1a501;
+  border-color: #f1a501;
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.checkboxLabel input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.checkboxLabel .checkmark:after {
+  left: 5px;
+  top: 1px;
+  width: 5px;
+  height: 10px;
+  border: solid #fff;
+  border-width: 0 2.5px 2.5px 0;
+  transform: rotate(45deg);
+  position: absolute;
+  content: "";
+}
+
+.submitBtn {
+  margin-top: 10px;
+  background: #f1a501;
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 36px;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px 0 rgba(241, 165, 1, 0.08);
+  align-self: flex-start;
+}
+
+.submitBtn:hover {
+  background: #d18e00;
+}
+
+.successMsg {
+  text-align: left;
+  padding: 32px 0;
+}
+
+.successMsg h3 {
+  color: #6a1b9a;
+  font-size: 1.3rem;
+  margin-bottom: 8px;
+}
+
+.successMsg p {
+  color: #333;
+  font-size: 1.05rem;
+}
+
+@media (max-width: 700px) {
+  .listGroundBg {
+    padding: 24px 0 0 0;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  .formContainer {
+    padding: 18px 6px;
+    max-width: 98vw;
+  }
+} 

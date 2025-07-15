@@ -1,0 +1,119 @@
+.pageContainer {
+  max-width: 1100px;
+  margin: auto;
+  padding: 64px 24px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.heroSection {
+  background: linear-gradient(90deg, #6a1b9a 0%, #f59e0b 100%);
+  color: #fff;
+  text-align: center;
+  padding: 80px 24px 60px 24px;
+  border-radius: 24px;
+  margin-bottom: 48px;
+}
+
+.heroTitle {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.heroSubtitle {
+  font-size: 1.3rem;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+.infoSection {
+  margin-bottom: 48px;
+  text-align: center;
+}
+
+.infoTitle {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #6a1b9a;
+  margin-bottom: 16px;
+}
+
+.infoText {
+  font-size: 1.1rem;
+  color: #555;
+  max-width: 700px;
+  margin: 0 auto 24px auto;
+}
+
+.formSection {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+  padding: 40px 32px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.formLabel {
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+}
+
+.formInput,
+.formTextarea {
+  padding: 14px;
+  border-radius: 8px;
+  border: 1px solid #d2d2d7;
+  font-size: 1rem;
+  background-color: #f5f5f7;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.formInput:focus,
+.formTextarea:focus {
+  outline: none;
+  border-color: #6a1b9a;
+  box-shadow: 0 0 0 2px rgba(106, 27, 154, 0.2);
+}
+
+.formTextarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.submitButton {
+  padding: 16px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  background-color: #6a1b9a;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submitButton:hover {
+  background-color: #4a148c;
+}
+
+.successMessage {
+  color: #2e7d32;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 24px;
+  font-size: 1.1rem;
+} 

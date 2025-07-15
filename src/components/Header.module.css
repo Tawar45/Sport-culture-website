@@ -1,0 +1,28 @@
+.top_banner {
+  background-color: #372366;
+  padding: 15px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.culture-container {
+  max-width: 1140px;
+  margin: 0 auto; /* Centers the content block */
+  flex-grow: 1; /* Allows it to take available space */
+  display: flex;
+  white-space: nowrap;
+  overflow-x: auto;
+  gap: 1.5rem; /* Equivalent to Tailwind's space-x-6 */
+}
+
+.nav_menu_container { display: flex; align-items: center; gap: 20px; }
+.nav_menu_container a { text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  color: #000; }
+
+.nav_container { padding: 15px 0px; }
