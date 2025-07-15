@@ -2,20 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './Home.module.css';
 import { Tabs, Tab, Box } from '@mui/material';
-import {Card,CardMedia} from '@mui/material';
-import pickleballIcon from '../assets/Pickleball.png';
-import tennisIcon from '../assets/Tennis.png';
-import tableTennisIcon from '../assets/Table Tennis.png';
-import badmintonIcon from '../assets/Badminton.png';
 import heroBackground from '../assets/hero-section-back-img.png';
 import FilterSection from '../components/FilterSection';
-
 import calendarImage from '../assets/calender.png';
 import buildingimage from '../assets/buildings.png';
 import tenisimage from '../assets/tablet-tenis.png';
 import volleyimage from '../assets/volleyball-home.png';
 import subsendimg from '../assets/sub-send-img.png';
-// import eyeicon from '../assets/eye-icon.svg';
 import LogoSlider from '../components/LogoSlider';
 import { motion } from 'framer-motion';
 
@@ -205,25 +198,26 @@ const Home = () => {
 
       {/* Featured Venues/Courts Section */}
       <section className={`py-8 sm:py-12 px-4 ${styles}`}>
-          <div className ="venue-card">
+        <div className={styles.venue_grid}>
+          <div className={styles.venue_card} >
           <img
           id="venue-image"
-          src="https://example.com/image1.jpg"
-          alt="Venue Name"
+          src="https://cdn.shopify.com/s/files/1/0900/7503/8066/files/Landing_page_1_1.jpg?v=1752340351"
+          alt="Venue Name" className='img-fluid venue_img'
           />
-          <div className="venue_content">
-          <p className="venue_type">Football</p>
-          <h3 className="venue_name">Greenfield Stadium</h3>
+          <div className={styles.venue_content}>
+          <p className={styles.venue_type}>Football <span className={styles.hour_text}> 200rs per hour</span></p>
+          <h3 className={styles.venue_name}>Greenfield Stadium</h3>
           <p className="venue_location">New York City</p>
-          <div className="venue_actions">
-          <button className="view_details_btn">
+          <div className={styles.venue_actions}>
+          <button className={styles.view_details_btn} >
           <i className="fa-solid fa-eye"></i> View Details
           </button>
-          <button className="book_now_btn">Book Now</button>
+          <button className={styles.book_details_btn}>Book Now</button>
           </div>
           </div>
           </div>
-        
+          </div>
         {/* <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 text-center mb-8 sm:mb-12">Featured Venues</h2> */}
         {/* {loading ? (
           <div className="flex justify-center items-center py-8">

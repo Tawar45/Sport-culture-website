@@ -324,13 +324,14 @@
 .venue_card {
   background: white;
   border-radius: 0.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  
   overflow: hidden;
   transition: transform 0.3s ease;
 }
 
 .venue_card:hover {
   transform: scale(1.05);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .venue_image {
@@ -342,6 +343,7 @@
 .venue_content {
   padding: 1.25rem;
 }
+
 
 .venue_type {
   font-size: 0.875rem;
@@ -448,16 +450,36 @@
   }
 }
 
-  .venue-card {
-    max-width: 345px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    transition: transform 0.2s;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    overflow: hidden;
-  }
+/* venue-container */
+.venue_grid {     display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px; }
+      .venue_img { border-radius: 5px 0px 5px 0px; }
+      .venue_content .venue_type { font-family: Montserrat;
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 100%; }
+
+  .venue_content { padding: 20px; border: 1px solid #d9d9d9; }
+  .hour_text { 
+    font-weight: 700;
+    font-size: 14px;
+    color: #F1A501;
+     }
+     .venue_name {
+      font-weight: 500;
+      font-style: Medium;
+      font-size: 18px;
+
+       }
+       .view_details_btn { background: transparent;
+        border: 1px solid #d9d9d9;
+        padding: 13px 31px;
+        border-radius: 40px; color: #333333; }
+        .book_details_btn {  background: transparent;
+          border: 1px solid #d9d9d9;
+          padding: 13px 15px;
+          border-radius: 40px; color: #333333; }
 
   .venue-card:hover {
     transform: scale(1.02);
@@ -492,23 +514,6 @@
 
   .venue_actions {
     display: flex;
-    justify-content: space-between;
+    gap: 20px;
     margin-top: 12px;
-  }
-
-  .view_details_btn, .book_now_btn {
-    padding: 8px 12px;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-  }
-
-  .view_details_btn {
-    background-color: #007bff;
-    color: white;
-  }
-
-  .book_now_btn {
-    background-color: #28a745;
-    color: white;
   }
