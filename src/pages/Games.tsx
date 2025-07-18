@@ -1,6 +1,5 @@
-import { useRef, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './Games.module.css';
-import { useAuth } from '../context/AuthContext';
 const API_URL = import.meta.env.VITE_API_URL; // For Vite
   
 export const fetchGames = async () => {
@@ -37,12 +36,6 @@ const Games = () => {
   
   return (
     <div className={styles.pageContainer}>
-      {/* <header className={styles.header}>
-        <h1 className={styles.title}>Games</h1>
-        <p className={styles.subtitle}>
-          Explore our collection of sports and games—each with its own magic, just like a Ghibli adventure.
-        </p>
-      </header> */}
       <div className={styles.gamesGrid}>
         {games.map((game) => (
           <div
