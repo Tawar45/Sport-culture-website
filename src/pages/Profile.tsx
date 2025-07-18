@@ -1,15 +1,5 @@
-import React, { useState ,useEffect } from "react";
+import { useState ,useEffect } from "react";
 
-// const getAvatarUrl = (name: string) =>
-//   `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=f1a501&color=fff`;
-
-// const initialUser = {
-//   name: "Rahul Sharma",
-//   email: "rahul.sharma@email.com",
-//   phone: "+91 9876543210",
-//   city: "Ahmedabad",
-//   joined: "Jan 2023",
-// };
 const API_URL = import.meta.env.VITE_API_URL; // For Vite
 
 export const fetchProfile = async () => {
@@ -24,20 +14,11 @@ export const fetchProfile = async () => {
 };
 
 const Profile = () => {
-  // const [user, setUser] = useState(initialUser);
-  const [editMode, setEditMode] = useState(false);
-  const [form, setForm] = useState([]);
   const [profile, setProfile] = useState<any>(null);
-
-  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   setForm({ ...form, [e.target.name]: e.target.value });
-  // };
   useEffect(() => {
     const getProfile = async () => {
       try {
-        console.log("API_URL:", API_URL); // Debug
         const data = await fetchProfile();
-        console.log("Profile data:", data); // Debug
         setProfile(data.user);
       } catch (error) {
         console.error('Failed to fetch profile:', error);

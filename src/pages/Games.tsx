@@ -1,6 +1,5 @@
-import { useRef, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './Games.module.css';
-import { useAuth } from '../context/AuthContext';
 const API_URL = import.meta.env.VITE_API_URL; // For Vite
   
 export const fetchGames = async () => {
