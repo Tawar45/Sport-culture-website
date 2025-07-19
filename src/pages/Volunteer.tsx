@@ -40,7 +40,7 @@ const Volunteer = () => {
       </section>
 
       <section className={styles.formSection}>
-        <h2 className={styles.infoTitle}>Sign Up</h2>
+        <h2 className={styles.infoTitle}>Request</h2>
         <form className={styles.form} onSubmit={handleSubmit}>
           <div className={styles.formGroup}>
             <label className={styles.formLabel} htmlFor="name">Name</label>

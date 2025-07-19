@@ -94,14 +94,14 @@ const Home = () => {
           <div className="text-center mb-8 sm:mb-12">
             <h1 className={`${styles.heroTitle} `} style={{ letterSpacing: 2 }}>
             </h1>
-            <p className={`${styles.heroDescription} mb-5 text-center`}>
-            NEED OF THE HOUR
-            </p>
+            <h1 className={`${styles.heroDescription} mb-5 text-center`}>
+            Book Your Court. Anytime. Anywhere.
+            </h1>
           </div>
-          <FilterSection onSearch={handleSearch} />
+          {/* <FilterSection onSearch={handleSearch} /> */}
           <p className={`${styles.heroDescription} mt-5 text-center`}>
-          JOIN THE REVOLUTION
-            </p>
+          Reserve your favorite sports venue in just a few clicks — fast, easy, and reliable.
+          </p>
         </div>
       </section>
 
@@ -175,7 +175,7 @@ const Home = () => {
           <h3 className={styles.venue_name}>{ground.name}</h3>
           <p className="venue_location">{ground.address} {ground.city}</p>
           <div className={styles.venue_actions}>
-          <button   className={styles.view_details_btn}onClick={() => viewDetails(ground.id)}>
+          <button   className={styles.view_details_btn} onClick={() => viewDetails(ground.id)}>
           <i className="fa-solid fa-eye"></i> View Details
           </button>
           <button className={styles.book_details_btn}>Book Now</button>
