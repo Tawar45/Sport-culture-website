@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import styles from './Home.module.css';
 import { Tabs, Tab, Box } from '@mui/material';
 import heroBackground from '../assets/hero-section-back-img.png';
-import FilterSection from '../components/FilterSection';
 import calendarImage from '../assets/calender.png';
 import buildingimage from '../assets/buildings.png';
 import tenisimage from '../assets/tablet-tenis.png';
@@ -78,9 +77,7 @@ const Home = () => {
   const handleChange = () => {
    
   }
-  const handleSearch = () => {
-   
-  }
+
   const viewDetails = (id:any) =>{
     navigate(`/venues/${id}`);
   }
