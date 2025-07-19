@@ -17,6 +17,8 @@ import { DatePicker, TimePicker } from '@mui/x-date-pickers';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
+import { useNavigate } from 'react-router-dom';
+const API_URL = import.meta.env.VITE_API_URL; // For Vite
 
 interface Venue {
   id: string;
@@ -27,18 +29,20 @@ interface Venue {
   rating: number;
   address: string;
   images: string[];
+  imageUrl: string;
   availableSlots: string[];
   facilities: string[];
   location: {
     lat: number;
     lng: number;
   };
+  amenityNames: { id: number; name: string }[]; // <-- Add this line
 }
 
 const VenueListing = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  
+  const navigate = useNavigate();
   const [venues, setVenues] = useState<Venue[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -64,13 +68,10 @@ const VenueListing = () => {
       if (selectedDate) params.append('date', selectedDate.format('YYYY-MM-DD'));
       if (selectedTime) params.append('time', selectedTime.format('HH:mm'));
 
-      console.log('Fetching with params:', params.toString()); // Debug log
-      const response = await fetch(`http://localhost:3000/api/turfs/search?${params.toString()}`);
-      if (!response.ok) throw new Error('Failed to fetch venues');
-      
+      const response = await fetch(`${API_URL}/api/ground/list`);
+      if (!response.ok) throw new Error('Failed to fetch venues');      
       const data = await response.json();
-      console.log('Received data:', data); // Debug log
-      setVenues(data);
+      setVenues(data.grounds);
       setError(null);
     } catch (err: any) {
       console.error('Error fetching venues:', err); // Debug log
@@ -83,6 +84,9 @@ const VenueListing = () => {
   const handleFilter = () => {
     fetchVenues();
   };
+  const viewDetails = (id:any) =>{
+    navigate(`/venues/${id}`);
+  }
 
   const VenueCard = ({ venue }: { venue: Venue }) => {
     return (
@@ -90,34 +94,35 @@ const VenueListing = () => {
         <CardMedia
           component="img"
           height="200"
-          image={venue.images[0] || 'https://via.placeholder.com/300x200'}
-          alt={venue.name}
+          image={venue?.imageUrl}
+          alt={venue?.name}
         />
         <CardContent sx={{ flexGrow: 1 }}>
           <Typography gutterBottom variant="h6" component="h2">
-            {venue.name}
+            {venue?.name}
           </Typography>
           <Typography variant="body2" color="text.secondary" gutterBottom>
-            {venue.address}
+            {venue?.address}
           </Typography>
           <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-            <Rating value={venue.rating} precision={0.5} readOnly size="small" />
+            <Rating value={venue?.rating} precision={0.5} readOnly size="small" />
             <Typography variant="body2" color="text.secondary" sx={{ ml: 1 }}>
-              ({venue.rating})
+              ({venue?.rating ?  venue?.rating :'0'})
             </Typography>
           </Box>
           <Typography variant="h6" color="primary" gutterBottom>
-            ₹{venue.price}/hour
+            ₹{venue?.price}/hour
           </Typography>
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mb: 2 }}>
-            {venue.facilities.map((facility, index) => (
-              <Chip key={index} label={facility} size="small" />
+            {venue?.amenityNames.map((amenities) => (
+              <Chip key={amenities?.id} label={amenities?.name} size="small" />
             ))}
           </Box>
           <Button
             variant="contained"
             color="primary"
-            fullWidth
+            fullWidth  
+            onClick={() => viewDetails(venue.id)}
           >
             View Details
           </Button>
@@ -199,9 +204,7 @@ const VenueListing = () => {
           </Button>
         </Box>
       </Box>
-
-      {/* Results */}
-      {loading ? (
+       {loading ? (
         <Typography>Loading...</Typography>
       ) : error ? (
         <Typography color="error">{error}</Typography>

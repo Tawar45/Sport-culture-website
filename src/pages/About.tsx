@@ -1,9 +1,5 @@
 import { useState } from 'react';
 import styles from './About.module.css';
-// import { Swiper, SwiperSlide } from 'swiper/react';
-// import { Autoplay, Pagination } from 'swiper/modules';
-// import 'swiper/css';
-// import 'swiper/css/pagination';
 import { motion } from 'framer-motion';
 
 declare module "slick-carousel/slick/slick.css";
@@ -19,11 +15,11 @@ const About = () => {
         Rebuilding the Spirit of Sports.
         </h5>
         <h1 className={styles.heroTitle}>About Sports Culture</h1>
-      <p>In today's fast-moving world, playing has taken a back seat. Stadiums are full, but playgrounds are empty. People watch sports — but fewer people play.
-<b>Sports Culture </b>is created to change that.
-We are a growing movement dedicated to bringing people back to playing — not just watching. Whether you're discovering your first sport, a former athlete missing the game or someone simply looking for a healthy and active lifestyle —<b> Sports Culture welcomes everyone</b>.
-Our platform is not just about games — it's about creating accessible, inclusive, and vibrant sports communities across cities.
-</p>
+        <p>In today's fast-moving world, playing has taken a back seat. Stadiums are full, but playgrounds are empty. People watch sports — but fewer people play.
+          <b>Sports Culture </b>is created to change that.
+          We are a growing movement dedicated to bringing people back to playing — not just watching. Whether you're discovering your first sport, a former athlete missing the game or someone simply looking for a healthy and active lifestyle —<b> Sports Culture welcomes everyone</b>.
+          Our platform is not just about games — it's about creating accessible, inclusive, and vibrant sports communities across cities.
+        </p>
       </section>
 
       <section className={styles.contentSection}>

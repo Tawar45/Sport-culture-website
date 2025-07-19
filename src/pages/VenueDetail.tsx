@@ -1,27 +1,28 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styles from './VenueDetail.module.css';
+const API_URL = import.meta.env.VITE_API_URL; // For Vite
 
 // Using a simple unicode character for the checkmark icon
 const CheckmarkIcon = () => <span className={styles.amenityIcon}>✔</span>;
 
 // The emoji icons have been removed from this list
-const amenitiesList = [
-  { label: 'Parking' },
-  { label: 'Washroom' },
-  { label: 'Lockers' },
-  { label: 'Drinking Water' },
-  { label: 'Flood Lights' },
-];
+// const amenitiesList = [
+//   { label: 'Parking' },
+//   { label: 'Washroom' },
+//   { label: 'Lockers' },
+//   { label: 'Drinking Water' },
+//   { label: 'Flood Lights' },
+// ];
 
-const sportsIcons = [
-  { label: 'Tennis', icon: '🎾' },
-  { label: 'Badminton', icon: '🏸' },
-  { label: 'Table Tennis', icon: '🏓' },
-  { label: 'Pickleball', icon: '🏓' },
+// const sportsIcons = [
+//   { label: 'Tennis', icon: '🎾' },
+//   { label: 'Badminton', icon: '🏸' },
+//   { label: 'Table Tennis', icon: '🏓' },
+//   { label: 'Pickleball', icon: '🏓' },
   
   
-];
+// ];
 
 const venuesNearby = [
   {
@@ -46,10 +47,10 @@ const VenueDetail = () => {
       try {
         setLoading(true);
         if (!id) throw new Error('Venue ID is required');
-        const response = await fetch(`http://localhost:3000/api/turfs/${id}`);
+        const response = await fetch(`${API_URL}/api/ground/get/${id}`);
         if (!response.ok) throw new Error(`Failed to fetch venue details: ${response.statusText}`);
         const data = await response.json();
-        setVenue(data);
+        setVenue(data.ground);
         setError(null);
       } catch (err: any) {
         setError(err.message || 'Failed to fetch venue details');
@@ -60,30 +61,31 @@ const VenueDetail = () => {
     fetchVenueDetails();
   }, [id]);
 
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p style={{ color: 'red' }}>{error}</p>;
   if (!venue) return <p>Venue not found</p>;
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>{venue.name}</h1>
-      <p className={styles.address}>{venue.address}</p>
+      <h1 className={styles.title}>{venue?.name}</h1>
+      <p className={styles.address}>{venue?.address}</p>
 
       <div className={styles.layout}>
         {/* Main Content */}
         <div className={styles.mainContent}>
           <div className={styles.section}>
             <img
-              src={venue.images[currentImageIndex]}
-              alt={venue.name}
+              src={venue?.imageUrls[currentImageIndex]}
+              alt={venue?.name}
               className={styles.mainImage}
             />
             <div className={styles.thumbnailContainer}>
-              {venue.images.map((img: string, idx: number) => (
+              {venue?.imageUrls.map((img: string, idx: number) => (
                 <img
                   key={idx}
                   src={img}
-                  alt={venue.name + ' thumbnail'}
+                  alt={venue?.name + ' thumbnail'}
                   className={`${styles.thumbnail} ${idx === currentImageIndex ? styles.thumbnailActive : ''}`}
                   onClick={() => setCurrentImageIndex(idx)}
                 />
@@ -93,30 +95,24 @@ const VenueDetail = () => {
           <div className={styles.section}>
             <h2 className={styles.sectionTitle}>Amenities</h2>
             <div className={styles.amenitiesList}>
-              {amenitiesList.map((item) => (
-                <div key={item.label} className={styles.amenityItem}>
+              {venue?.amenityNames.map((item:any) => (
+                <div key={item?.name} className={styles.amenityItem}>
                   <CheckmarkIcon />
-                  <span>{item.label}</span>
+                  <span>{item?.name}</span>
                 </div>
               ))}
             </div>
           </div>
           <div className={styles.section}>
             <h2 className={styles.sectionTitle}>About Venue</h2>
-            <h3 className={styles.aboutSportTitle}>Table Tennis</h3>
-            <p className={styles.aboutText}>
-              Sports equipment available on rent: Rackets, Balls.<br />
-              Barefoot play is strictly prohibited.<br />
-              A maximum of 2 members per booking per TT Table is admissible.
-            </p>
-            <h3 className={styles.aboutSportTitle}>Badminton</h3>
-            <p className={styles.aboutText}>
-              Badminton Non-Marking Shoes compulsory for Badminton. Shoes must be worn after entering the facility.<br />
-              Sports equipment available on rent: Rackets, Shoes.<br />
-              Socks are compulsory for rented shoes. Please carry your own.<br />
-              Barefoot play is strictly prohibited.<br />
-              A maximum of 4 members per booking per badminton court is admissible.
-            </p>
+            {venue?.gameNames.map((item:any) => (
+              <div>
+                <h3 className={styles.aboutSportTitle}>{item?.name}</h3>
+                <p className={styles.aboutText}>
+                {item?.description}
+                </p>   
+            </div>           
+            ))}
           </div>
         </div>
         {/* Sidebar */}
@@ -133,8 +129,8 @@ const VenueDetail = () => {
             <div>
               <h4 className={styles.timingsTitle}>Timing</h4>
               <p>Monday - Sunday</p>
-              <p>INR {venue.price}/hour</p>
-              <p>07:00 AM - 10:00 PM</p>
+              <p>INR {venue?.price}/hour</p>
+              <p>{venue?.openTime} - {venue?.closeTime}</p>
             </div>
            
           </div>
@@ -143,13 +139,14 @@ const VenueDetail = () => {
             </button>
           <div className={styles.sidebarCard}>
             <h4 className={styles.sportsTitle}>Sports Available</h4>
+
             <div className={styles.sportsList}>
-              {sportsIcons.map((item) => (
+            {venue?.gameNames.map((item:any) => (
                 <div key={item.label} className={styles.sportItem}>
-                  <span className={styles.sportIcon}>{item.icon}</span>
-                  <span className={styles.sportLabel}>{item.label}</span>
+                  <span><img src={item?.imageUrl} style={{width:30 ,height:30 }}/></span>
+                  <span className={styles.sportLabel}>{item?.name}</span>
                 </div>
-              ))}
+            ))}   
             </div>
           </div>
           <div className={styles.sidebarCard}>

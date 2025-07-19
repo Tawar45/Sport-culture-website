@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './Home.module.css';
 import { Tabs, Tab, Box } from '@mui/material';
 import heroBackground from '../assets/hero-section-back-img.png';
@@ -27,16 +28,28 @@ type Game = {
   description: string;
   // add other properties if needed
 };
-
+type Ground = {
+  id:string;
+  name: string;
+  imageUrl: string;
+  city:string;
+  address:string;
+  description: string;
+  openTime:string;
+  closeTime:string;
+  price:number;
+  // add other properties if needed
+};
 
 const Home = () => {
+  const navigate = useNavigate();
   const [categories, setCategories] = useState<Game[]>([]);  
+  const [ground, setGround] = useState<Ground[]>([]);
+
   useEffect(() => {
     const getGames = async () => {
       try {
-        console.log("API_URL:", API_URL); // Debug
         const data = await fetchGames();
-        console.log("Profile data:", data); // Debug
         setCategories(data.games);
       } catch (error) {
         console.error('Failed to fetch profile:', error);
@@ -44,16 +57,34 @@ const Home = () => {
       };
       getGames();
  }, []);
+
+ useEffect(() => {
+   const getGround = async () => {
+     try {
+       const response = await fetch(`${API_URL}/api/ground/list`, {
+         headers: {
+           'Content-Type': 'application/json',
+         },
+       });
+       const data = await response.json();
+       setGround(data.grounds);
+     } catch (error) {
+       console.error('Failed to fetch profile:', error);
+     }
+     };
+     getGround();
+ }, []);
+
   const handleChange = () => {
    
   }
   const handleSearch = () => {
    
   }
-   
-
-
-
+  const viewDetails = (id:any) =>{
+    navigate(`/venues/${id}`);
+  }
+  
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
       {/* Hero Section */}
@@ -67,9 +98,7 @@ const Home = () => {
             NEED OF THE HOUR
             </p>
           </div>
-
           <FilterSection onSearch={handleSearch} />
-
           <p className={`${styles.heroDescription} mt-5 text-center`}>
           JOIN THE REVOLUTION
             </p>
@@ -136,52 +165,25 @@ const Home = () => {
 
       {/* Featured Venues/Courts Section */}
       <section className={`py-8 sm:py-12 px-4 ${styles}`}>
+
         <div className={styles.venue_grid}>
+        {ground.map((ground) => (
           <div className={styles.venue_card} >
-          <img
-          id="venue-image"
-          src="https://cdn.shopify.com/s/files/1/0900/7503/8066/files/Landing_page_1_1.jpg?v=1752340351"
-          alt="Venue Name" className='img-fluid venue_img'
-          />
+          <img id="venue-image" src={ground.imageUrl} alt={ground.name} className='img-fluid venue_img'/>
           <div className={styles.venue_content}>
-          <p className={styles.venue_type}>Football <span className={styles.hour_text}> 200rs per hour</span></p>
-          <h3 className={styles.venue_name}>Greenfield Stadium</h3>
-          <p className="venue_location">New York City</p>
+          <p className={styles.venue_type}>{ground.name} <span className={styles.hour_text}> 200rs per hour</span></p>
+          <h3 className={styles.venue_name}>{ground.name}</h3>
+          <p className="venue_location">{ground.address} {ground.city}</p>
           <div className={styles.venue_actions}>
-          <button className={styles.view_details_btn} >
+          <button   className={styles.view_details_btn}onClick={() => viewDetails(ground.id)}>
           <i className="fa-solid fa-eye"></i> View Details
           </button>
           <button className={styles.book_details_btn}>Book Now</button>
           </div>
           </div>
           </div>
-          </div>
-        {/* <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 text-center mb-8 sm:mb-12">Featured Venues</h2> */}
-        {/* {loading ? (
-          <div className="flex justify-center items-center py-8">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
-          </div>
-        ) : error ? (
-          <div className="text-center py-4">
-            <p className="text-red-600 mb-4">{error}</p>
-            <button
-              onClick={() => window.location.reload()}
-              className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors"
-            >
-              Retry
-            </button>
-          </div>
-        ) : venues.length === 0 ? (
-          <div className="text-center py-4">
-            <p className="text-gray-600">No venues found</p>
-          </div>
-        ) : (
-          <div className={`${styles.venue_grid} ${styles.venue_slider}`}>
-            {venues.map((venue) => (
-              <VenueCard key={venue.id} venue={venue} />
-            ))}
-          </div>
-        )} */}
+        ))}
+        </div>
       </section>
       <section className={styles.easy_section} >
         <div className='container'>
