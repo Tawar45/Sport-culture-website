@@ -86,7 +86,7 @@ const Header = () => {
           <div className={styles['nav_menu_container']}>
             <Link to="/" className="hover:text-[#6a1b9a]">Home</Link>
             <Link to="/about" className="hover:text-[#6a1b9a]">About us</Link>
-            <Link to="/courts" className="hover:text-[#6a1b9a]">Venues</Link>
+            <Link to="/venues" className="hover:text-[#6a1b9a]">Venues</Link>
             <Link to="/games" className="hover:text-[#6a1b9a]">Sports</Link>
             <Link to="/volunteer" className="hover:text-[#6a1b9a]">Join Us</Link>
             <Link to="/blogs" className="hover:text-[#6a1b9a]">Blogs</Link>
