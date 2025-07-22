@@ -1,24 +1,8 @@
-import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import {
-  Container,
-  Typography,
-  TextField,
-  MenuItem,
-  Button,
-  Box,
-  Card,
-  CardMedia,
-  CardContent,
-  Rating,
-  Chip,
-} from '@mui/material';
-import { DatePicker, TimePicker } from '@mui/x-date-pickers';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs';
-import { useNavigate } from 'react-router-dom';
-const API_URL = import.meta.env.VITE_API_URL; // For Vite
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import styles from './VenueListing.module.css'; // Import CSS modules
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 interface Venue {
   id: string;
@@ -36,22 +20,23 @@ interface Venue {
     lat: number;
     lng: number;
   };
-  amenityNames: { id: number; name: string }[]; // <-- Add this line
+  amenityNames: { id: number; name: string }[];
 }
 
-const VenueListing = () => {
+const VenueListing: React.FC = () => {
   const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
   const navigate = useNavigate();
+  const searchParams = new URLSearchParams(location.search);
+
   const [venues, setVenues] = useState<Venue[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   const [selectedSport, setSelectedSport] = useState(searchParams.get('sport') || 'all');
   const [selectedCity, setSelectedCity] = useState(searchParams.get('city') || 'all');
-  const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(dayjs(searchParams.get('date') || undefined));
-  const [selectedTime, setSelectedTime] = useState<dayjs.Dayjs | null>(dayjs(searchParams.get('time') || undefined));
-  
+  const [selectedDate, setSelectedDate] = useState(searchParams.get('date') || '');
+  const [selectedTime, setSelectedTime] = useState(searchParams.get('time') || '');
+
   const sports = ['all', 'badminton', 'volleyball', 'basketball', 'table-tennis', 'tennis', 'pickleball'];
   const cities = ['Ahmedabad', 'Mumbai', 'Delhi', 'Bangalore', 'Chennai', 'Hyderabad', 'Kolkata', 'Pune'];
 
@@ -65,16 +50,17 @@ const VenueListing = () => {
       const params = new URLSearchParams();
       if (selectedSport !== 'all') params.append('sport', selectedSport);
       if (selectedCity !== 'all') params.append('city', selectedCity);
-      if (selectedDate) params.append('date', selectedDate.format('YYYY-MM-DD'));
-      if (selectedTime) params.append('time', selectedTime.format('HH:mm'));
+      if (selectedDate) params.append('date', selectedDate);
+      if (selectedTime) params.append('time', selectedTime);
 
       const response = await fetch(`${API_URL}/api/ground/list`);
-      if (!response.ok) throw new Error('Failed to fetch venues');      
+      if (!response.ok) throw new Error('Failed to fetch venues');
+      
       const data = await response.json();
       setVenues(data.grounds);
       setError(null);
     } catch (err: any) {
-      console.error('Error fetching venues:', err); // Debug log
+      console.error('Error fetching venues:', err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -84,143 +70,158 @@ const VenueListing = () => {
   const handleFilter = () => {
     fetchVenues();
   };
-  const viewDetails = (id:any) =>{
-    navigate(`/venues/${id}`);
-  }
 
-  const VenueCard = ({ venue }: { venue: Venue }) => {
-    return (
-      <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-        <CardMedia
-          component="img"
-          height="200"
-          image={venue?.imageUrl}
-          alt={venue?.name}
-        />
-        <CardContent sx={{ flexGrow: 1 }}>
-          <Typography gutterBottom variant="h6" component="h2">
-            {venue?.name}
-          </Typography>
-          <Typography variant="body2" color="text.secondary" gutterBottom>
-            {venue?.address}
-          </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-            <Rating value={venue?.rating} precision={0.5} readOnly size="small" />
-            <Typography variant="body2" color="text.secondary" sx={{ ml: 1 }}>
-              ({venue?.rating ?  venue?.rating :'0'})
-            </Typography>
-          </Box>
-          <Typography variant="h6" color="primary" gutterBottom>
-            ₹{venue?.price}/hour
-          </Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mb: 2 }}>
-            {venue?.amenityNames.map((amenities) => (
-              <Chip key={amenities?.id} label={amenities?.name} size="small" />
-            ))}
-          </Box>
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth  
-            onClick={() => viewDetails(venue.id)}
-          >
-            View Details
-          </Button>
-        </CardContent>
-      </Card>
-    );
+  const viewDetails = (id: string) => {
+    navigate(`/venues/${id}`);
   };
 
-  return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Sports Venues in {selectedCity === 'all' ? 'All Cities' : selectedCity}
-        </Typography>
-      </Box>
+  const capitalizeSportName = (sport: string): string => {
+    return sport.split('-')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+  };
 
-      {/* Filters */}
-      <Box sx={{ mb: 4 }}>
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' }, gap: 2 }}>
-          <Box>
-            <TextField
-              select
-              fullWidth
-              label="Sport"
-              value={selectedSport}
-              onChange={(e) => setSelectedSport(e.target.value)}
-            >
-              <MenuItem value="all">All Sports</MenuItem>
-              {sports.filter(sport => sport !== 'all').map((sport) => (
-                <MenuItem key={sport} value={sport}>
-                  {sport.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>
-          <Box>
-            <TextField
-              select
-              fullWidth
-              label="City"
-              value={selectedCity}
-              onChange={(e) => setSelectedCity(e.target.value)}
-            >
-              <MenuItem value="all">All Cities</MenuItem>
-              {cities.map((city) => (
-                <MenuItem key={city} value={city}>{city}</MenuItem>
-              ))}
-            </TextField>
-          </Box>
-          <Box>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                label="Date"
-                value={selectedDate}
-                onChange={(newValue) => setSelectedDate(newValue)}
-                slotProps={{ textField: { fullWidth: true } }}
-              />
-            </LocalizationProvider>
-          </Box>
-          <Box>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <TimePicker
-                label="Time"
-                value={selectedTime}
-                onChange={(newValue) => setSelectedTime(newValue)}
-                slotProps={{ textField: { fullWidth: true } }}
-              />
-            </LocalizationProvider>
-          </Box>
-        </Box>
-        <Box sx={{ mt: 2 }}>
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            onClick={handleFilter}
-          >
-            Apply Filters
-          </Button>
-        </Box>
-      </Box>
-       {loading ? (
-        <Typography>Loading...</Typography>
-      ) : error ? (
-        <Typography color="error">{error}</Typography>
-      ) : venues.length === 0 ? (
-        <Typography>No venues found matching your criteria.</Typography>
-      ) : (
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 3 }}>
-          {venues.map((venue) => (
-            <Box key={venue.id}>
-              <VenueCard venue={venue} />
-            </Box>
-          ))}
-        </Box>
-      )}
-    </Container>
+  const generateStars = (rating: number): string => {
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 >= 0.5;
+    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+    
+    let stars = '';
+    
+    // Full stars
+    for (let i = 0; i < fullStars; i++) {
+      stars += '★';
+    }
+    
+    // Half star
+    if (hasHalfStar) {
+      stars += '☆';
+    }
+    
+    // Empty stars
+    for (let i = 0; i < emptyStars; i++) {
+      stars += '☆';
+    }
+    
+    return stars;
+  };
+
+const VenueCard: React.FC<{ venue: Venue }> = ({ venue }) => {
+  return (
+    <div className={styles.venue_card}>
+      <img
+        id="venue-image"
+        src={venue?.imageUrl}
+        alt={venue?.name}
+        className="img-fluid venue_img"
+        onError={(e) => {
+          (e.target as HTMLImageElement).src = '/placeholder-venue.jpg';
+        }}
+      />
+      
+      <div className={styles.venue_content}>
+         <p className={styles.venue_type}>PICKLE BALL<span className={styles.hour_text}> 200rs per hour</span></p>
+        <p className={styles.venue_type}>
+          {venue?.name}
+          <span className={styles.hour_text}> ₹{venue?.price}/hour</span>
+        </p>
+
+        <h3 className={styles.venue_name}>{venue?.name}</h3>
+        
+        <p className="venue_location">
+          {venue?.address} {venue?.city}
+        </p>
+
+        <div className={styles.venue_actions}>
+          <button className={styles.view_details_btn} onClick={() => viewDetails(venue.id)}>
+            <i className="fa-solid fa-eye"></i> View Details
+          </button>
+          <button className={styles.book_details_btn}>Book Now</button>
+        </div>
+      </div>
+    </div>
   );
 };
 
-export default VenueListing; 
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <h1 className={styles.pageTitle}>
+          Sports Venues in {selectedCity === 'all' ? 'All Cities' : selectedCity}
+        </h1>
+      </div>
+      <div className={styles.venue_list_container}>
+        <div className={styles.filters}>
+          <div className={styles.filterGrid}>
+            <div className={styles.formGroup}>
+              <label>Sport</label>
+              <select
+                value={selectedSport}
+                onChange={(e) => setSelectedSport(e.target.value)}
+              >
+                <option value="all">All Sports</option>
+                {sports.filter(sport => sport !== 'all').map((sport) => (
+                  <option key={sport} value={sport}>
+                    {capitalizeSportName(sport)}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* <div className={styles.formGroup}>
+              <label>City</label>
+              <select
+                value={selectedCity}
+                onChange={(e) => setSelectedCity(e.target.value)}
+              >
+                <option value="all">All Cities</option>
+                {cities.map((city) => (
+                  <option key={city} value={city}>{city}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className={styles.formGroup}>
+              <label>Date</label>
+              <input
+                type="date"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+              />
+            </div>
+
+            <div className={styles.formGroup}>
+              <label>Time</label>
+              <input
+                type="time"
+                value={selectedTime}
+                onChange={(e) => setSelectedTime(e.target.value)}
+              />
+            </div> */}
+          </div>
+
+          <button className={`${styles.btn} ${styles.btnPrimary} ${styles.btnFull}`} onClick={handleFilter}>
+            Apply Filters
+          </button>
+        </div>
+
+        {loading ? (
+          <div className={styles.loading}>Loading...</div>
+        ) : error ? (
+          <div className={styles.error}>{error}</div>
+        ) : venues.length === 0 ? (
+          <div className={styles.noVenues}>No venues found matching your criteria.</div>
+        ) : (
+          <div className={styles.venuesGrid}>
+            {venues.map((venue) => (
+              <VenueCard key={venue.id} venue={venue} />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default VenueListing;
