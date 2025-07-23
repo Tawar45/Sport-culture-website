@@ -106,6 +106,58 @@ const VenueListing: React.FC = () => {
     return stars;
   };
 
+
+  const CustomSportDropdown: React.FC<{
+  selectedSport: string;
+  onSelect: (value: string) => void;
+}> = ({ selectedSport, onSelect }) => {
+  const [open, setOpen] = useState(false);
+  const selected = sportOptions.find(opt => opt.value === selectedSport) || sportOptions[0];
+
+  return (
+    <div className={styles.customDropdownWrapper}>
+      <label>Sport</label>
+      <div
+        className={styles.customDropdown}
+        onClick={() => setOpen(!open)}
+      >
+        <img src={selected.icon} alt={selected.label} />
+        <span>{selected.label}</span>
+        <span className={styles.arrow}>▼</span>
+      </div>
+
+      {open && (
+        <ul className={styles.customDropdownMenu}>
+          {sportOptions.map((opt) => (
+            <li
+              key={opt.value}
+              onClick={() => {
+                onSelect(opt.value);
+                setOpen(false);
+              }}
+              className={`${styles.dropdownItem} ${
+                selectedSport === opt.value ? styles.active : ''
+              }`}
+            >
+              <img src={opt.icon} alt={opt.label} />
+              <span>{opt.label}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+
+  const sportOptions = [
+  { label: 'Pickleball', value: 'pickleball', icon: '../src/assets/pickleball.svg' },
+  { label: 'Tennis', value: 'tennis', icon: '../src/assets/tennis.svg' },
+  { label: 'Table Tennis', value: 'table-tennis', icon: '../src/assets/tabletennis.svg' },
+  { label: 'Basketball', value: 'basketball', icon: '../src/assets/basketball.svg' },
+  { label: 'Volleyball', value: 'volleyball', icon: '../src/assets/volleyball.svg' },
+  { label: 'Badminton', value: 'badminton', icon: '../src/assets/badminton.svg' },
+];
+
 const VenueCard: React.FC<{ venue: Venue }> = ({ venue }) => {
   return (
     <div className={styles.venue_card}>
@@ -145,7 +197,7 @@ const VenueCard: React.FC<{ venue: Venue }> = ({ venue }) => {
 
 
   return (
-    <div className={styles.container}>
+    <div className={`container ${styles.myCustomWrapper}`}>
       <div className={styles.header}>
         <h1 className={styles.pageTitle}>
           Sports Venues in {selectedCity === 'all' ? 'All Cities' : selectedCity}
@@ -154,56 +206,23 @@ const VenueCard: React.FC<{ venue: Venue }> = ({ venue }) => {
       <div className={styles.venue_list_container}>
         <div className={styles.filters}>
           <div className={styles.filterGrid}>
-            <div className={styles.formGroup}>
-              <label>Sport</label>
-              <select
-                value={selectedSport}
-                onChange={(e) => setSelectedSport(e.target.value)}
-              >
-                <option value="all">All Sports</option>
-                {sports.filter(sport => sport !== 'all').map((sport) => (
-                  <option key={sport} value={sport}>
-                    {capitalizeSportName(sport)}
-                  </option>
-                ))}
-              </select>
-            </div>
+<div className={styles.sportFilterList}>
+  {sportOptions.map((opt) => (
+    <div
+      key={opt.value}
+      className={`${styles.sportItem} ${selectedSport === opt.value ? styles.active : ''}`}
+      onClick={() => setSelectedSport(opt.value)}
+    >
+      <img src={opt.icon} alt={opt.label} />
+      <span>{opt.label}</span>
+    </div>
+  ))}
+</div>
 
-            {/* <div className={styles.formGroup}>
-              <label>City</label>
-              <select
-                value={selectedCity}
-                onChange={(e) => setSelectedCity(e.target.value)}
-              >
-                <option value="all">All Cities</option>
-                {cities.map((city) => (
-                  <option key={city} value={city}>{city}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className={styles.formGroup}>
-              <label>Date</label>
-              <input
-                type="date"
-                value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
-              />
-            </div>
-
-            <div className={styles.formGroup}>
-              <label>Time</label>
-              <input
-                type="time"
-                value={selectedTime}
-                onChange={(e) => setSelectedTime(e.target.value)}
-              />
-            </div> */}
+          
           </div>
 
-          <button className={`${styles.btn} ${styles.btnPrimary} ${styles.btnFull}`} onClick={handleFilter}>
-            Apply Filters
-          </button>
+      
         </div>
 
         {loading ? (
