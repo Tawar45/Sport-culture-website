@@ -18,6 +18,8 @@
   overflow-x: auto;
   gap: 1.5rem; /* Equivalent to Tailwind's space-x-6 */
 }
+.header_container { box-shadow: 0px 4px 4px 0px #0000001A;
+ }
 
 .nav_menu_container { display: flex; align-items: center; gap: 20px; }
 .nav_menu_container a { text-decoration: none;

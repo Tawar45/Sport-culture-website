@@ -65,7 +65,7 @@ const Header = () => {
   };
 
   return (
-    <header className="w-full">
+    <header className={`w-full ${styles.header_container}`}>
       {/* Top Banner */}
       <div className={styles.top_banner}>
         <div className='text-center w-100'>
