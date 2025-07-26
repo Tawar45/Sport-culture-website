@@ -1,26 +1,51 @@
 import React, { useState } from 'react';
 import styles from './Volunteer.module.css';
+const API_URL = import.meta.env.VITE_API_URL; // For Vite
 
 const Volunteer = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
+    city: '',
     interest: '',
     message: ''
   });
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would send the data to your backend or email service
-    setSubmitted(true);
-    setFormData({ name: '', email: '', phone: '', interest: '', message: '' });
+    setError(null);
+    try {
+      const response = await fetch(`${API_URL}/api/volunteer/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          city: formData.city,
+          area_of_interest: formData.interest,
+          message: formData.message,
+        }),
+      });
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to submit');
+      }
+      setSubmitted(true);
+      // setFormData({ name: '', email: '', phone: '', city: '', interest: '', message: '' });
+    } catch (err: any) {
+      setError(err.message || 'Failed to submit');
+    }
   };
 
   return (
@@ -79,6 +104,18 @@ const Volunteer = () => {
             />
           </div>
           <div className={styles.formGroup}>
+            <label className={styles.formLabel} htmlFor="city">City</label>
+            <input
+              className={styles.formInput}
+              type="text"
+              id="city"
+              name="city"
+              value={formData.city}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className={styles.formGroup}>
             <label className={styles.formLabel} htmlFor="interest">Area of Interest</label>
             <select
               className={styles.formInput}
@@ -109,6 +146,7 @@ const Volunteer = () => {
           <button className={styles.submitButton} type="submit">Submit</button>
         </form>
         {submitted && <div className={styles.successMessage}>Thank you for volunteering! We'll be in touch soon.</div>}
+        {error && <div className={styles.errorMessage}>{error}</div>}
       </section>
     </div>
   );
