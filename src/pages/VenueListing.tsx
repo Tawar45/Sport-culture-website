@@ -12,6 +12,21 @@ interface Venue {
   address: string;
   imageUrl: string;
 }
+type Game = {
+  id:string;
+  name: string;
+  imageUrl: string;
+  description: string;
+  // add other properties if needed
+};
+export const fetchGames = async () => {
+  const response = await fetch(`${API_URL}/api/games/list`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  return response.json();
+};
 
 const VenueListing: React.FC = () => {
   const location = useLocation();
@@ -20,18 +35,30 @@ const VenueListing: React.FC = () => {
   const [venues, setVenues] = useState<Venue[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const [sport, setSport] =useState<Game[]>([]);
   const [selectedSport, setSelectedSport] = useState(searchParams.get('sport') || 'pickleball');
   const [selectedCity] = useState(searchParams.get('city') || 'all');
 
-  const sportOptions = [
-    { label: 'Pickleball', value: 'pickleball', icon: '../src/assets/pickleball.svg' },
-    { label: 'Tennis', value: 'tennis', icon: '../src/assets/tennis.svg' },
-    { label: 'Table Tennis', value: 'table-tennis', icon: '../src/assets/table tennis.svg' },
-    { label: 'Basketball', value: 'basketball', icon: '../src/assets/basketball.svg' },
-    { label: 'Volleyball', value: 'volleyball', icon: '../src/assets/volleyball.svg' },
-    { label: 'Badminton', value: 'badminton', icon: '../src/assets/badminton.svg' },
-  ];
+  // const sportOptions = [
+  //   { label: 'Pickleball', value: 'pickleball', icon: '../src/assets/pickleball.svg' },
+  //   { label: 'Tennis', value: 'tennis', icon: '../src/assets/tennis.svg' },
+  //   { label: 'Table Tennis', value: 'table-tennis', icon: '../src/assets/table tennis.svg' },
+  //   { label: 'Basketball', value: 'basketball', icon: '../src/assets/basketball.svg' },
+  //   { label: 'Volleyball', value: 'volleyball', icon: '../src/assets/volleyball.svg' },
+  //   { label: 'Badminton', value: 'badminton', icon: '../src/assets/badminton.svg' },
+  // ];
+
+  useEffect(() => {
+    const getGames = async () => {
+      try {
+        const data = await fetchGames();
+        setSport(data.games);
+      } catch (error) {
+        console.error('Failed to fetch profile:', error);
+      }
+      };
+      getGames();
+ }, []);
 
   useEffect(() => {
     fetchVenues();
@@ -102,14 +129,13 @@ const VenueListing: React.FC = () => {
 
       <div className={styles.venue_list_container}>
             <div className={styles.sportFilterList}>
-              {sportOptions.map((opt) => (
+              {sport.map((sports) => (
                 <div
-                  key={opt.value}
-                  className={`${styles.sportItem} ${selectedSport === opt.value ? styles.active : ''}`}
-                  onClick={() => setSelectedSport(opt.value)}
-                >
-                  <img src={opt.icon} alt={opt.label} />
-                  <span>{opt.label}</span>
+                  key={sports.id}
+                  className={`${styles.sportItem} ${selectedSport === sports.id ? styles.active : ''}`}
+                  onClick={() => setSelectedSport(sports.id)}>
+                  <img src={sports.imageUrl} alt={sports.name} />
+                  <span>{sports.name}</span>
                 </div>
               ))}
             </div>

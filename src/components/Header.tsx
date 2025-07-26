@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { IconButton, Menu, MenuItem } from '@mui/material';
 import { AccountCircle } from '@mui/icons-material';
@@ -6,8 +6,11 @@ import styles from './Header.module.css';
 import cultureLogo from '../assets/culture-logo.png';
 import { useAuth } from '../context/AuthContext';
 
-const API_URL = import.meta.env.VITE_API_URL;
+type cityType = {
+  name: string;
+}
 
+const API_URL = import.meta.env.VITE_API_URL;
 const fetchCities = async () => {
   const response = await fetch(`${API_URL}/api/city/list`, {
     headers: {
@@ -22,7 +25,7 @@ const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const { user, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [cities, setCities] = useState([]);
+  const [cities, setCities] = useState<cityType[]>([]);
 
   useEffect(() => {
     const getCities = async () => {
@@ -40,7 +43,7 @@ const Header = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const handleMenu = (event) => {
+  const handleMenu = (event:any) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -95,7 +98,7 @@ const Header = () => {
           <div className=" md:flex items-center gap-3">
             <select className="bg-gray-100 p-2 rounded-md border-0 text-gray-700 text-sm">
               {cities?.map((city) => (
-                <option key={city.name}>{city?.name}</option>
+                <option key={city?.name}>{city?.name}</option>
               ))}
             </select>
             {user ? (
