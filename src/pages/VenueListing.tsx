@@ -1,226 +1,134 @@
-import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import {
-  Container,
-  Typography,
-  TextField,
-  MenuItem,
-  Button,
-  Box,
-  Card,
-  CardMedia,
-  CardContent,
-  Rating,
-  Chip,
-} from '@mui/material';
-import { DatePicker, TimePicker } from '@mui/x-date-pickers';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs';
-import { useNavigate } from 'react-router-dom';
-const API_URL = import.meta.env.VITE_API_URL; // For Vite
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import styles from './VenueListing.module.css';
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 interface Venue {
   id: string;
   name: string;
   city: string;
-  sport: string;
   price: number;
-  rating: number;
   address: string;
-  images: string[];
   imageUrl: string;
-  availableSlots: string[];
-  facilities: string[];
-  location: {
-    lat: number;
-    lng: number;
-  };
-  amenityNames: { id: number; name: string }[]; // <-- Add this line
 }
 
-const VenueListing = () => {
+const VenueListing: React.FC = () => {
   const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
   const navigate = useNavigate();
+  const searchParams = new URLSearchParams(location.search);
   const [venues, setVenues] = useState<Venue[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
-  const [selectedSport, setSelectedSport] = useState(searchParams.get('sport') || 'all');
-  const [selectedCity, setSelectedCity] = useState(searchParams.get('city') || 'all');
-  const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(dayjs(searchParams.get('date') || undefined));
-  const [selectedTime, setSelectedTime] = useState<dayjs.Dayjs | null>(dayjs(searchParams.get('time') || undefined));
-  
-  const sports = ['all', 'badminton', 'volleyball', 'basketball', 'table-tennis', 'tennis', 'pickleball'];
-  const cities = ['Ahmedabad', 'Mumbai', 'Delhi', 'Bangalore', 'Chennai', 'Hyderabad', 'Kolkata', 'Pune'];
+
+  const [selectedSport, setSelectedSport] = useState(searchParams.get('sport') || 'pickleball');
+  const [selectedCity] = useState(searchParams.get('city') || 'all');
+
+  const sportOptions = [
+    { label: 'Pickleball', value: 'pickleball', icon: '../src/assets/pickleball.svg' },
+    { label: 'Tennis', value: 'tennis', icon: '../src/assets/tennis.svg' },
+    { label: 'Table Tennis', value: 'table-tennis', icon: '../src/assets/table tennis.svg' },
+    { label: 'Basketball', value: 'basketball', icon: '../src/assets/basketball.svg' },
+    { label: 'Volleyball', value: 'volleyball', icon: '../src/assets/volleyball.svg' },
+    { label: 'Badminton', value: 'badminton', icon: '../src/assets/badminton.svg' },
+  ];
 
   useEffect(() => {
     fetchVenues();
-  }, [selectedSport, selectedCity, selectedDate, selectedTime]);
+  }, [selectedSport, selectedCity]);
 
   const fetchVenues = async () => {
     try {
       setLoading(true);
-      const params = new URLSearchParams();
-      if (selectedSport !== 'all') params.append('sport', selectedSport);
-      if (selectedCity !== 'all') params.append('city', selectedCity);
-      if (selectedDate) params.append('date', selectedDate.format('YYYY-MM-DD'));
-      if (selectedTime) params.append('time', selectedTime.format('HH:mm'));
-
       const response = await fetch(`${API_URL}/api/ground/list`);
-      if (!response.ok) throw new Error('Failed to fetch venues');      
+      if (!response.ok) throw new Error('Failed to fetch venues');
+      
       const data = await response.json();
       setVenues(data.grounds);
       setError(null);
     } catch (err: any) {
-      console.error('Error fetching venues:', err); // Debug log
+      console.error('Error fetching venues:', err);
       setError(err.message);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleFilter = () => {
-    fetchVenues();
-  };
-  const viewDetails = (id:any) =>{
+  const viewDetails = (id: string) => {
     navigate(`/venues/${id}`);
-  }
+  };
 
-  const VenueCard = ({ venue }: { venue: Venue }) => {
+  const VenueCard: React.FC<{ venue: Venue }> = ({ venue }) => {
     return (
-      <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-        <CardMedia
-          component="img"
-          height="200"
-          image={venue?.imageUrl}
-          alt={venue?.name}
-        />
-        <CardContent sx={{ flexGrow: 1 }}>
-          <Typography gutterBottom variant="h6" component="h2">
-            {venue?.name}
-          </Typography>
-          <Typography variant="body2" color="text.secondary" gutterBottom>
-            {venue?.address}
-          </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-            <Rating value={venue?.rating} precision={0.5} readOnly size="small" />
-            <Typography variant="body2" color="text.secondary" sx={{ ml: 1 }}>
-              ({venue?.rating ?  venue?.rating :'0'})
-            </Typography>
-          </Box>
-          <Typography variant="h6" color="primary" gutterBottom>
-            ₹{venue?.price}/hour
-          </Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mb: 2 }}>
-            {venue?.amenityNames.map((amenities) => (
-              <Chip key={amenities?.id} label={amenities?.name} size="small" />
-            ))}
-          </Box>
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth  
-            onClick={() => viewDetails(venue.id)}
-          >
-            View Details
-          </Button>
-        </CardContent>
-      </Card>
+      <div className={styles.venue_card}>
+        <div className={styles.venue_img_box}>
+          <img
+            src={venue?.imageUrl}
+            alt={venue?.name}
+            className={`img-fluid ${styles.venue_img}`}
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = '/placeholder-venue.jpg';
+            }}
+          />
+        </div>
+        
+        <div className={styles.venue_content}>
+          <p className={styles.venue_type}>
+            {venue?.name} <span>|</span> <span className={styles.hour_text}> ₹{venue?.price}/hour</span>
+          </p>
+          <p className="venue_location">
+            {venue?.address} {venue?.city}
+          </p>
+
+          <div className={styles.venue_actions}>
+            <button className={styles.view_details_btn} onClick={() => viewDetails(venue.id)}>
+              <i className="fa-solid fa-eye"></i> View Details
+            </button>
+            <button className={styles.book_details_btn}>Book Now</button>
+          </div>
+        </div>
+      </div>
     );
   };
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
+    <div className={`container pt-5 pb-5 ${styles.myCustomWrapper}`}>
+      <div className={styles.header}>
+        <h1 className={styles.pageTitle}>
           Sports Venues in {selectedCity === 'all' ? 'All Cities' : selectedCity}
-        </Typography>
-      </Box>
+        </h1>
+        <p className={styles.pagedes}>Chhipa Bakhal, Main Road Shanti Nagar Jain Colony, Indore, Madhya Pradesh - 452001</p>
+      </div>
 
-      {/* Filters */}
-      <Box sx={{ mb: 4 }}>
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' }, gap: 2 }}>
-          <Box>
-            <TextField
-              select
-              fullWidth
-              label="Sport"
-              value={selectedSport}
-              onChange={(e) => setSelectedSport(e.target.value)}
-            >
-              <MenuItem value="all">All Sports</MenuItem>
-              {sports.filter(sport => sport !== 'all').map((sport) => (
-                <MenuItem key={sport} value={sport}>
-                  {sport.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
-                </MenuItem>
+      <div className={styles.venue_list_container}>
+            <div className={styles.sportFilterList}>
+              {sportOptions.map((opt) => (
+                <div
+                  key={opt.value}
+                  className={`${styles.sportItem} ${selectedSport === opt.value ? styles.active : ''}`}
+                  onClick={() => setSelectedSport(opt.value)}
+                >
+                  <img src={opt.icon} alt={opt.label} />
+                  <span>{opt.label}</span>
+                </div>
               ))}
-            </TextField>
-          </Box>
-          <Box>
-            <TextField
-              select
-              fullWidth
-              label="City"
-              value={selectedCity}
-              onChange={(e) => setSelectedCity(e.target.value)}
-            >
-              <MenuItem value="all">All Cities</MenuItem>
-              {cities.map((city) => (
-                <MenuItem key={city} value={city}>{city}</MenuItem>
-              ))}
-            </TextField>
-          </Box>
-          <Box>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                label="Date"
-                value={selectedDate}
-                onChange={(newValue) => setSelectedDate(newValue)}
-                slotProps={{ textField: { fullWidth: true } }}
-              />
-            </LocalizationProvider>
-          </Box>
-          <Box>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <TimePicker
-                label="Time"
-                value={selectedTime}
-                onChange={(newValue) => setSelectedTime(newValue)}
-                slotProps={{ textField: { fullWidth: true } }}
-              />
-            </LocalizationProvider>
-          </Box>
-        </Box>
-        <Box sx={{ mt: 2 }}>
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            onClick={handleFilter}
-          >
-            Apply Filters
-          </Button>
-        </Box>
-      </Box>
-       {loading ? (
-        <Typography>Loading...</Typography>
-      ) : error ? (
-        <Typography color="error">{error}</Typography>
-      ) : venues.length === 0 ? (
-        <Typography>No venues found matching your criteria.</Typography>
-      ) : (
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 3 }}>
-          {venues.map((venue) => (
-            <Box key={venue.id}>
-              <VenueCard venue={venue} />
-            </Box>
-          ))}
-        </Box>
-      )}
-    </Container>
+            </div>
+        {loading ? (
+          <div className={styles.loading}>Loading...</div>
+        ) : error ? (
+          <div className={styles.error}>{error}</div>
+        ) : venues.length === 0 ? (
+          <div className={styles.noVenues}>No venues found matching your criteria.</div>
+        ) : (
+          <div className={styles.venuesGrid}>
+            {venues.map((venue) => (
+              <VenueCard key={venue.id} venue={venue} />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 
-export default VenueListing; 
+export default VenueListing;

@@ -18,6 +18,8 @@
   overflow-x: auto;
   gap: 1.5rem; /* Equivalent to Tailwind's space-x-6 */
 }
+.header_container { box-shadow: 0px 4px 4px 0px #0000001A;
+ }
 
 .nav_menu_container { display: flex; align-items: center; gap: 20px; }
 .nav_menu_container a { text-decoration: none;
@@ -25,4 +27,219 @@
   font-weight: 500;
   color: #000; }
 
-.nav_container { padding: 15px 0px; }
+.nav_container_desk { padding: 15px 0px; }
+
+
+/* Navigation Menu Container for Desktop */
+.nav_menu_container {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.nav_menu_container a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  padding: 0.5rem 0;
+  position: relative;
+}
+
+.nav_menu_container a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: #6a1b9a;
+  transition: width 0.3s ease;
+}
+
+.nav_menu_container a:hover::after {
+  width: 100%;
+}
+
+/* Header Container */
+.header_container {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Top Banner */
+.top_banner {
+  background: linear-gradient(135deg, #6a1b9a, #8e24aa);
+  color: white;
+  padding: 0.5rem 0;
+  font-size: 0.875rem;
+}
+
+/* Navigation Container */
+.nav_container_desk {
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Hamburger Menu Styles */
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 24px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+
+.hamburger span {
+  display: block;
+  height: 3px;
+  width: 100%;
+  background-color: #333;
+  border-radius: 2px;
+  opacity: 1;
+  left: 0;
+  transform: rotate(0deg);
+  transition: all 0.25s ease-in-out;
+  transform-origin: left center;
+}
+
+.hamburger span:nth-child(1) {
+  top: 0px;
+}
+
+.hamburger span:nth-child(2) {
+  top: 10px;
+}
+
+.hamburger span:nth-child(3) {
+  top: 20px;
+}
+
+/* Active state (X icon) */
+.hamburger.active span:nth-child(1) {
+  transform: rotate(45deg);
+  top: -3px;
+  left: 8px;
+}
+
+.hamburger.active span:nth-child(2) {
+  width: 0%;
+  opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+  transform: rotate(-45deg);
+  top: 21px;
+  left: 8px;
+}
+
+/* Hover effect */
+.hamburger:hover span {
+  background-color: #6a1b9a;
+}
+
+/* Focus outline for accessibility */
+.hamburger:focus {
+  outline: 2px solid #6a1b9a;
+  outline-offset: 2px;
+}
+
+/* Alternative hamburger style with different animation */
+.hamburger_alt {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  position: relative;
+}
+
+.hamburger_alt span {
+  display: block;
+  position: absolute;
+  height: 3px;
+  width: 24px;
+  background: #333;
+  border-radius: 2px;
+  opacity: 1;
+  left: 3px;
+  transform: rotate(0deg);
+  transition: all 0.25s ease-in-out;
+}
+
+.hamburger_alt span:nth-child(1) {
+  top: 8px;
+}
+
+.hamburger_alt span:nth-child(2),
+.hamburger_alt span:nth-child(3) {
+  top: 15px;
+}
+
+.hamburger_alt span:nth-child(4) {
+  top: 22px;
+}
+
+.hamburger_alt.active span:nth-child(1) {
+  top: 15px;
+  width: 0%;
+  left: 50%;
+}
+
+.hamburger_alt.active span:nth-child(2) {
+  transform: rotate(45deg);
+}
+
+.hamburger_alt.active span:nth-child(3) {
+  transform: rotate(-45deg);
+}
+
+.hamburger_alt.active span:nth-child(4) {
+  top: 15px;
+  width: 0%;
+  left: 50%;
+}
+
+/* Smooth slide-in animation for mobile menu */
+@keyframes slideInFromTop {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Add this class to your mobile menu container if you want slide animation */
+.mobile_menu_slide {
+  animation: slideInFromTop 0.3s ease-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .hamburger {
+    display: flex;
+  }
+  .nav_container_desk { display: none !important; }
+}
+
+@media (min-width: 769px) {
+  .hamburger {
+    display: none;
+  }
+}
