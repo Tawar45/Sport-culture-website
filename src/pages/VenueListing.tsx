@@ -20,12 +20,7 @@ type Game = {
   // add other properties if needed
 };
 export const fetchGames = async () => {
-  const response = await fetch(`${API_URL}/api/games/list`, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  return response.json();
+
 };
 
 const VenueListing: React.FC = () => {
@@ -37,19 +32,24 @@ const VenueListing: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [sport, setSport] =useState<Game[]>([]);
   const [selectedCity] = useState(searchParams.get('city') || 'all');
-  const [gameIds, setGameIds] = useState(searchParams.get('games') || 'all');
+  const [gameIds, setGameIds] = useState(searchParams.get('games') || '');
 
   useEffect(() => {
     const getGames = async () => {
       try {
-        const data = await fetchGames();
+        const response = await fetch(`${API_URL}/api/games/list`, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        const data = await response.json();
         setSport(data.games);
       } catch (error) {
         console.error('Failed to fetch profile:', error);
       }
-      };
-      getGames();
- }, []);
+    };
+    getGames();
+  }, []);
 
   useEffect(() => {
     fetchVenues();
@@ -140,6 +140,7 @@ const VenueListing: React.FC = () => {
                   <span>{sports.name}</span>
                 </div>
               ))}
+
               {gameIds !== '' && (
                 <button 
                   className={styles.clearFilterBtn}
