@@ -36,17 +36,8 @@ const VenueListing: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [sport, setSport] =useState<Game[]>([]);
-  const [selectedSport, setSelectedSport] = useState(searchParams.get('sport') || 'pickleball');
   const [selectedCity] = useState(searchParams.get('city') || 'all');
-
-  // const sportOptions = [
-  //   { label: 'Pickleball', value: 'pickleball', icon: '../src/assets/pickleball.svg' },
-  //   { label: 'Tennis', value: 'tennis', icon: '../src/assets/tennis.svg' },
-  //   { label: 'Table Tennis', value: 'table-tennis', icon: '../src/assets/table tennis.svg' },
-  //   { label: 'Basketball', value: 'basketball', icon: '../src/assets/basketball.svg' },
-  //   { label: 'Volleyball', value: 'volleyball', icon: '../src/assets/volleyball.svg' },
-  //   { label: 'Badminton', value: 'badminton', icon: '../src/assets/badminton.svg' },
-  // ];
+  const [gameIds, setGameIds] = useState(searchParams.get('games') || 'all');
 
   useEffect(() => {
     const getGames = async () => {
@@ -62,12 +53,15 @@ const VenueListing: React.FC = () => {
 
   useEffect(() => {
     fetchVenues();
-  }, [selectedSport, selectedCity]);
+    // eslint-disable-next-line
+  }, [gameIds, selectedCity]);
 
   const fetchVenues = async () => {
+
+    const query = gameIds && gameIds !== 'all' ? `?games=${gameIds}` : '';
     try {
       setLoading(true);
-      const response = await fetch(`${API_URL}/api/ground/list`);
+      const response = await fetch(`${API_URL}/api/ground/list${query}`);
       if (!response.ok) throw new Error('Failed to fetch venues');
       
       const data = await response.json();
@@ -84,7 +78,15 @@ const VenueListing: React.FC = () => {
   const viewDetails = (id: string) => {
     navigate(`/venues/${id}`);
   };
+  const filterGame = (id: string) => {
+    setGameIds(id);
+    navigate(`/venues?games=${id}`);
+  }
 
+  const clearFilter = () => {
+    setGameIds('');
+    navigate('/venues');
+  }
   const VenueCard: React.FC<{ venue: Venue }> = ({ venue }) => {
     return (
       <div className={styles.venue_card}>
@@ -132,12 +134,20 @@ const VenueListing: React.FC = () => {
               {sport.map((sports) => (
                 <div
                   key={sports.id}
-                  className={`${styles.sportItem} ${selectedSport === sports.id ? styles.active : ''}`}
-                  onClick={() => setSelectedSport(sports.id)}>
+                  className={`${styles.sportItem} ${gameIds === sports.id ? styles.active : ''}`}
+                  onClick={() => filterGame(sports.id)}>
                   <img src={sports.imageUrl} alt={sports.name} />
                   <span>{sports.name}</span>
                 </div>
               ))}
+              {gameIds !== '' && (
+                <button 
+                  className={styles.clearFilterBtn}
+                  onClick={clearFilter}
+                >
+                  Clear Filter
+                </button>
+              )}
             </div>
         {loading ? (
           <div className={styles.loading}>Loading...</div>
