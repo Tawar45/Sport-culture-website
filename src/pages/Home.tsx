@@ -12,14 +12,6 @@ import LogoSlider from '../components/LogoSlider';
 
 const API_URL = import.meta.env.VITE_API_URL; // For Vite
 
-export const fetchGames = async () => {
-  const response = await fetch(`${API_URL}/api/games/list`, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  return response.json();
-};
 
 type Game = {
   name: string;
@@ -48,13 +40,18 @@ const Home = () => {
   useEffect(() => {
     const getGames = async () => {
       try {
-        const data = await fetchGames();
+        const response = await fetch(`${API_URL}/api/games/list`, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        const data = await response.json();
         setCategories(data.games);
       } catch (error) {
         console.error('Failed to fetch profile:', error);
       }
-      };
-      getGames();
+    };
+    getGames();
  }, []);
 
  useEffect(() => {
@@ -168,7 +165,7 @@ const Home = () => {
           <div className={styles.venue_card} >
           <img id="venue-image" src={ground.imageUrl} alt={ground.name} className='img-fluid venue_img'/>
           <div className={styles.venue_content}>
-          <p className={styles.venue_type}>{ground.name} <span className={styles.hour_text}> 200rs per hour</span></p>
+          <p className={styles.venue_type}>{ground.name} <span className={styles.hour_text}> {ground.price} rs per hour</span></p>
           <h3 className={styles.venue_name}>{ground.name}</h3>
           <p className="venue_location">{ground.address} {ground.city}</p>
           <div className={styles.venue_actions}>

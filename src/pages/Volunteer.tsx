@@ -13,15 +13,41 @@ const Volunteer = () => {
   });
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const validate = () => {
+    const errors: { [key: string]: string } = {};
+    if (!formData.name.trim()) errors.name = 'Name is required.';
+    if (!formData.email.trim()) {
+      errors.email = 'Email is required.';
+    } else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(formData.email)) {
+      errors.email = 'Invalid email format.';
+    }
+    if (!formData.phone.trim()) {
+      errors.phone = 'Phone is required.';
+    } else if (!/^\d{10}$/.test(formData.phone)) {
+      errors.phone = 'Phone must be 10 digits.';
+    }
+    if (!formData.city.trim()) errors.city = 'City is required.';
+    if (!formData.interest.trim()) errors.interest = 'Area of Interest is required.';
+    if (!formData.message.trim()) errors.message = 'Message is required.';
+    return errors;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setFieldErrors({});
+    const errors = validate();
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      return;
+    }
     try {
       const response = await fetch(`${API_URL}/api/volunteer/add`, {
         method: 'POST',
@@ -42,7 +68,7 @@ const Volunteer = () => {
         throw new Error(data.message || 'Failed to submit');
       }
       setSubmitted(true);
-      // setFormData({ name: '', email: '', phone: '', city: '', interest: '', message: '' });
+      setFormData({ name: '', email: '', phone: '', city: '', interest: '', message: '' });
     } catch (err: any) {
       setError(err.message || 'Failed to submit');
     }
@@ -76,8 +102,8 @@ const Volunteer = () => {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              required
             />
+            {fieldErrors.name && <div className={styles.errorMessage}>{fieldErrors.name}</div>}
           </div>
           <div className={styles.formGroup}>
             <label className={styles.formLabel} htmlFor="email">Email</label>
@@ -88,8 +114,8 @@ const Volunteer = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              required
             />
+            {fieldErrors.email && <div className={styles.errorMessage}>{fieldErrors.email}</div>}
           </div>
           <div className={styles.formGroup}>
             <label className={styles.formLabel} htmlFor="phone">Phone</label>
@@ -100,8 +126,8 @@ const Volunteer = () => {
               name="phone"
               value={formData.phone}
               onChange={handleChange}
-              required
             />
+            {fieldErrors.phone && <div className={styles.errorMessage}>{fieldErrors.phone}</div>}
           </div>
           <div className={styles.formGroup}>
             <label className={styles.formLabel} htmlFor="city">City</label>
@@ -112,8 +138,8 @@ const Volunteer = () => {
               name="city"
               value={formData.city}
               onChange={handleChange}
-              required
             />
+            {fieldErrors.city && <div className={styles.errorMessage}>{fieldErrors.city}</div>}
           </div>
           <div className={styles.formGroup}>
             <label className={styles.formLabel} htmlFor="interest">Area of Interest</label>
@@ -123,14 +149,14 @@ const Volunteer = () => {
               name="interest"
               value={formData.interest}
               onChange={handleChange}
-              required
             >
               <option value="">-- Select --</option>
-              <option value="event">Event Organization</option>
-              <option value="coaching">Coaching/Training</option>
-              <option value="promotion">Promotion & Outreach</option>
+              <option value="Event Organization">Event Organization</option>
+              <option value="Coaching/Training">Coaching/Training</option>
+              <option value="Promotion & Outreach">Promotion & Outreach</option>
               <option value="other">Other</option>
             </select>
+            {fieldErrors.interest && <div className={styles.errorMessage}>{fieldErrors.interest}</div>}
           </div>
           <div className={styles.formGroup}>
             <label className={styles.formLabel} htmlFor="message">Message</label>
@@ -140,8 +166,8 @@ const Volunteer = () => {
               name="message"
               value={formData.message}
               onChange={handleChange}
-              required
             />
+            {fieldErrors.message && <div className={styles.errorMessage}>{fieldErrors.message}</div>}
           </div>
           <button className={styles.submitButton} type="submit">Submit</button>
         </form>
