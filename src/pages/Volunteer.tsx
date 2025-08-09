@@ -67,7 +67,7 @@ const Volunteer = () => {
         const data = await response.json();
         throw new Error(data.message || 'Failed to submit');
       }
-      setSubmitted(true);
+    setSubmitted(true);
       setFormData({ name: '', email: '', phone: '', city: '', interest: '', message: '' });
     } catch (err: any) {
       setError(err.message || 'Failed to submit');
